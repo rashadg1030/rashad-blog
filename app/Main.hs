@@ -4,7 +4,7 @@ module Main where
 
 import qualified Data.Text.Lazy.IO as T
 import Lucid (renderText)
-import Contact 
+import Index 
 
 main :: IO ()
 main = do
