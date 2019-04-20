@@ -10,4 +10,5 @@ cdDocs :: String
 cdDocs = "./docs/"
 
 main :: IO ()
-main = T.writeFile (cdDocs <> "home.html") (renderText $ template test)
+main = do
+  T.writeFile (cdDocs <> "home.html") (renderText $ template test)
