@@ -11,4 +11,4 @@ cdDocs = "./docs/"
 
 main :: IO ()
 main = do
-  T.writeFile (cdDocs <> "home.html") (renderText $ template test)
+  T.writeFile (cdDocs <> "index.html") (renderText $ template test)
