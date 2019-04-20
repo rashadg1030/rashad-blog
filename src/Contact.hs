@@ -21,27 +21,27 @@ navBar = ul_ $ mconcat [ mkListItem "Home" "#index"
                        ]
 
 resumeButton :: Html ()
-resumeButton = button_ resume 
+resumeButton = button_ resumeLink 
 
-resume :: Html ()
-resume = a_ [href_ "./Rashad_Gover.pdf", download_ "Rashad_Gover"] "Download Resume"
+resumeLink :: Html ()
+resumeLink = a_ [href_ "./Rashad_Gover.pdf", download_ "Rashad_Gover"] "Download Resume"
 
 header :: Html ()
 header = head_ ( do meta_ [charset_ "utf-8"]
                     meta_ [ name_ "viewport"
-                        , content_ "width=device-width, initial-scale=1"
-                        ]
+                          , content_ "width=device-width, initial-scale=1"
+                          ]
                     link_ [ href_ "./style.css"
-                        , rel_ "stylesheet"
-                        , type_ "text/css"
-                        ]
+                          , rel_ "stylesheet"
+                          , type_ "text/css"
+                          ]
                     link_ [ href_ "//fonts.googleapis.com/css?family=Open+Sans" 
-                        , rel_ "stylesheet"
-                        , type_ "text/css"
-                        ]
+                          , rel_ "stylesheet"
+                          , type_ "text/css"
+                          ]
                     link_ [ href_ "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/css/bootstrap.min.css"
-                        , rel_ "stylesheet"
-                        , type_ "text/css"]
+                          , rel_ "stylesheet"
+                          , type_ "text/css"]
                     title_ "rλshλd1030" )
 -- Add Canon Later
 
