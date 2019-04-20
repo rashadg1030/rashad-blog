@@ -16,7 +16,12 @@ mkListItem :: Html () -> Text -> Html ()
 mkListItem t link = li_ (a_ [href_ link] t)
 
 listItems :: [Html ()]
-listItems = [mkListItem "Home" "#index"]
+listItems = [ mkListItem "Home" "#index"
+            , mkListItem "About" "#about"
+            , mkListItem "Gallery" "#gallery"
+            , mkListItem "Laboratory" "#lab"
+            , mkListItem "Contact" "#contact" 
+            ]
 
 template :: Html () -> Html ()
 template inner = do
