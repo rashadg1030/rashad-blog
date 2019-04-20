@@ -23,6 +23,12 @@ listItems = [ mkListItem "Home" "#index"
             , mkListItem "Contact" "#contact" 
             ]
 
+resumeButton :: Html ()
+resumeButton = button_ resume
+
+resume :: Html ()
+resume = a_ [href_ "./Rashad_Gover.pdf", download_ "Rashad_Gover"] "Download Resume"
+
 -- Add Canon Later
 
 template :: Html () -> Html ()
@@ -31,6 +37,7 @@ template inner = do
                   inner
                   p_ "This is my first entry." 
                   ul_ (mconcat listItems)  
+                  resumeButton
               
 
 test2 :: Html () 
