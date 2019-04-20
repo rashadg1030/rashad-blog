@@ -6,9 +6,6 @@ import qualified Data.Text.Lazy.IO as T
 import Lucid (renderText)
 import Contact 
 
-cdDocs :: String
-cdDocs = "./docs/"
-
 main :: IO ()
 main = do
-  T.writeFile (cdDocs <> "index.html") (renderText $ template "Welcome to my website!")
+  T.writeFile ("./docs" <> "/index.html") (renderText $ indexPage "Welcome to my website!")
