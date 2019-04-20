@@ -17,11 +17,13 @@ mkListItem t link = li_ (a_ [href_ link] t)
 
 listItems :: [Html ()]
 listItems = [ mkListItem "Home" "#index"
-            , mkListItem "About" "#about"
-            , mkListItem "Gallery" "#gallery"
-            , mkListItem "Laboratory" "#lab"
+            , mkListItem "Blog" "#blog"
+            , mkListItem "Laboratory" "#laboratory"
+            , mkListItem "Art" "#art"
             , mkListItem "Contact" "#contact" 
             ]
+
+-- Add Canon Later
 
 template :: Html () -> Html ()
 template inner = do
