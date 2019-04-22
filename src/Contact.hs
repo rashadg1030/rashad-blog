@@ -12,6 +12,7 @@ import Lucid.Base
 
 -- Add Canon Later
 contactPage :: Html ()
-contactPage = baseTemplate $ div_ (do p_ "let myContactInfo = Contact { name = \"Rashad Gover\""
+contactPage = baseTemplate $ div_ (do p_ "myContactInfo :: Rashad"  
+                                      p_ "myContactInfo = Contact { name = \"Rashad Gover\""
                                       p_ ", email = \"rashad.sasaki@gmail.com\""
-                                      p_ ", phone = \"(310)-910-3199\" }")
+                                      p_ ", location = \"Los Angeles, CA\" }")
