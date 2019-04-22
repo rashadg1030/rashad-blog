@@ -38,12 +38,18 @@ equalSignItem :: Html ()
 equalSignItem = li_ [class_ "pure-menu-item"] "="
 
 navBarItems :: [Html ()]
-navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ L.intersperse pipe [ mkNavBarItem "Engineer" "#"
-                                                                                       , mkNavBarItem "Scientist" "#"
-                                                                                       , mkNavBarItem "Writer" "#"
-                                                                                       , mkNavBarItem "Artist" "#" 
-                                                                                       , mkNavBarItem "Contact {..}" "./contact.html"
-                                                                                       ]
+navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersperse pipe $ [ mkNavBarItem "Engineer" "#"
+                                                                                          , mkNavBarItem "Scientist" "#"
+                                                                                          , mkNavBarItem "Writer" "#"
+                                                                                          , mkNavBarItem "Artist" "#" 
+                                                                                       --, mkNavBarItem "Contact {..}" "./contact.html"
+                                                                                          ] ++ [li_ [class_ "pure-menu-item pure-menu-has-children pure-menu-allow-hover"] (do a_ [href_ "", class_ "pure-menu-link"] "Contact"
+                                                                                                                                                                               ul_ [class_ "pure-menu-children"] contactListItems)])
+
+contactListItems :: Html ()
+contactListItems = mconcat [ mkNavBarItem "{ email = \"rashad.sasaki@gmail.com\"" "" 
+                           , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
+                           , mkNavBarItem ", lookingForJob = True }" ""]
 
 pipe :: Html ()
 pipe = span_ "|"
