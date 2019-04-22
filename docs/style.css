@@ -87,6 +87,11 @@ a.pure-button-primary {
     background: #2d3e50;
 }
 
+.pure-menu-link::after {
+    content: "" !important;
+    padding: 0 !important;
+}
+
 /*
  * -- SPLASH STYLES --
  * This is the blue top section that appears on the page.

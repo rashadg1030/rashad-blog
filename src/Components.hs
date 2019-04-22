@@ -49,7 +49,8 @@ navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersper
 contactListItems :: Html ()
 contactListItems = mconcat [ mkNavBarItem "{ email = \"rashad.sasaki@gmail.com\"" "" 
                            , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
-                           , mkNavBarItem ", lookingForJob = True }" ""]
+                           , mkNavBarItem ", lookingForJob = True }" ""
+                           , mkNavBarItem "deriving (Hireable)" ""]
 
 pipe :: Html ()
 pipe = span_ "|"
