@@ -11,8 +11,8 @@ import Lucid.Html5
 import Lucid.Base
 
 -- Add Canon Later
-indexPage :: Html () -> Html ()
-indexPage body = baseTemplate (do splashContainer "Rashad Gover" "Abstraction Engineer for Hire" "Download Resume" "./Rashad_Gover.pdf")
+indexPage :: Html ()
+indexPage = baseTemplate (do splashContainer "Rashad Gover" "Abstraction Engineer for Hire" "Download Resume" "./Rashad_Gover.pdf")
 
               
 

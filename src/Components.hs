@@ -3,6 +3,7 @@
 module Components where
 
 import Data.Text
+import qualified Data.List as L
 import Lucid
 import Lucid.Html5
 import Lucid.Base
@@ -25,20 +26,24 @@ headData = head_ ( do meta_ [ charset_ "utf-8" ]
                       link_ [ href_ "./style.css"
                             , rel_ "stylesheet"
                             ]
-                      title_ "rλshλd1030" )
+                      title_ "RΛSHΛD1030" )
 
 mkNavBarItem :: Html () -> Text -> Html ()
 mkNavBarItem t link = li_ [class_ "pure-menu-item"] (a_ [href_ link, class_ "pure-menu-link"] t)
 
 navBarItems :: [Html ()]
-navBarItems = [ mkNavBarItem "Blog" "#"
-              , mkNavBarItem "Laboratory" "#"
-              , mkNavBarItem "Art" "#"
-              , mkNavBarItem "Contact" "#" 
-              ]
+navBarItems = (mkNavBarItem "data Rashad =" "#") : L.intersperse pipe [ mkNavBarItem "Engineer" "#"
+                                                                      , mkNavBarItem "Scientist" "#"
+                                                                      , mkNavBarItem "Writer" "#"
+                                                                      , mkNavBarItem "Artist" "#" 
+                                                                      , mkNavBarItem "Contact" "./contact.html"
+                                                                      ]
+
+pipe :: Html ()
+pipe = span_ "|"
 
 navBar :: [Html ()] -> Html ()
-navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading", href_ "./index.html"] "rλshλd1030"
+navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading", href_ "./index.html"] "RΛSHΛD1030"
                                                                                                                     ul_ [class_ "pure-menu-list"] $ mconcat items))
 
 
