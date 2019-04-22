@@ -32,12 +32,12 @@ mkNavBarItem :: Html () -> Text -> Html ()
 mkNavBarItem t link = li_ [class_ "pure-menu-item"] (a_ [href_ link, class_ "pure-menu-link"] t)
 
 navBarItems :: [Html ()]
-navBarItems = (mkNavBarItem "data Rashad =" "#") : L.intersperse pipe [ mkNavBarItem "Engineer" "#"
-                                                                      , mkNavBarItem "Scientist" "#"
-                                                                      , mkNavBarItem "Writer" "#"
-                                                                      , mkNavBarItem "Artist" "#" 
-                                                                      , mkNavBarItem "Contact" "./contact.html"
-                                                                      ]
+navBarItems = (mkNavBarItem "data Rashad" "#") : [(mkNavBarItem "=" "")] ++ L.intersperse pipe [ mkNavBarItem "Engineer" "#"
+                                                                                            , mkNavBarItem "Scientist" "#"
+                                                                                            , mkNavBarItem "Writer" "#"
+                                                                                            , mkNavBarItem "Artist" "#" 
+                                                                                            , mkNavBarItem "Contact" "./contact.html"
+                                                                                            ]
 
 pipe :: Html ()
 pipe = span_ "|"
