@@ -31,16 +31,23 @@ headData = head_ ( do meta_ [ charset_ "utf-8" ]
                             ]
                       title_ "RλSHλD1030" )
 
-mkNavBarItem :: Html () -> Text -> Html ()
-mkNavBarItem t link = li_ [class_ "pure-menu-item"] (a_ [href_ link, class_ "pure-menu-link"] t)
+navBar :: [Html ()] -> Html ()
+navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading lowercase", href_ "./index.html"] "RλSHλD1030"
+                                                                                                                    ul_ [class_ "pure-menu-list"] $ mconcat items))
 
 equalSignItem :: Html ()
 equalSignItem = li_ [class_ "pure-menu-item"] "="
 
+pipe :: Html ()
+pipe = span_ "|"
+
+mkNavBarItem :: Html () -> Text -> Html ()
+mkNavBarItem t link = li_ [class_ "pure-menu-item"] (a_ [href_ link, class_ "pure-menu-link"] t)
+
 navBarItems :: [Html ()]
 navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersperse pipe $ [ mkNavBarItem "Software" "#"
                                                                                           , mkNavBarItem "Research" "#"
-                                                                                          , mkNavBarItem "Books" "#"
+                                                                                          , mkNavBarItem "Library" "#"
                                                                                           , mkNavBarItem "Art" "#" 
                                                                                           , mkNavBarItem "Contact {..}" "./contact.html" ])
 
@@ -58,13 +65,6 @@ contactInfo = Contact { email     = "rashad.sasaki@gmail.com"
 --                            , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
 --                            , mkNavBarItem ", lookingForJob = True }" ""
 --                            , mkNavBarItem "deriving (Hireable)" ""]
-
-pipe :: Html ()
-pipe = span_ "|"
-
-navBar :: [Html ()] -> Html ()
-navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading lowercase", href_ "./index.html"] "RλSHλD1030"
-                                                                                                                    ul_ [class_ "pure-menu-list"] $ mconcat items))
                                                                                                                  
 {--
 <div class="splash-container">
