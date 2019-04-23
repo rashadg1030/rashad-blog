@@ -145,3 +145,7 @@ a.pure-button-primary {
     z-index: 2;
     background: white;
 }
+
+.lowercase {
+    text-transform: none !important;
+}

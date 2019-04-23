@@ -29,7 +29,7 @@ headData = head_ ( do meta_ [ charset_ "utf-8" ]
                       link_ [ href_ "./style.css"
                             , rel_ "stylesheet"
                             ]
-                      title_ "RΛSHΛD1030" )
+                      title_ "RλSHλD1030" )
 
 mkNavBarItem :: Html () -> Text -> Html ()
 mkNavBarItem t link = li_ [class_ "pure-menu-item"] (a_ [href_ link, class_ "pure-menu-link"] t)
@@ -38,25 +38,32 @@ equalSignItem :: Html ()
 equalSignItem = li_ [class_ "pure-menu-item"] "="
 
 navBarItems :: [Html ()]
-navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersperse pipe $ [ mkNavBarItem "Engineer" "#"
-                                                                                          , mkNavBarItem "Scientist" "#"
-                                                                                          , mkNavBarItem "Writer" "#"
-                                                                                          , mkNavBarItem "Artist" "#" 
-                                                                                       --, mkNavBarItem "Contact {..}" "./contact.html"
-                                                                                          ] ++ [li_ [class_ "pure-menu-item pure-menu-has-children pure-menu-allow-hover"] (do a_ [href_ "", class_ "pure-menu-link"] "Contact"
-                                                                                                                                                                               ul_ [class_ "pure-menu-children"] contactListItems)])
+navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersperse pipe $ [ mkNavBarItem "Software" "#"
+                                                                                          , mkNavBarItem "Research" "#"
+                                                                                          , mkNavBarItem "Books" "#"
+                                                                                          , mkNavBarItem "Art" "#" 
+                                                                                          , mkNavBarItem "Contact {..}" "./contact.html" ])
 
-contactListItems :: Html ()
-contactListItems = mconcat [ mkNavBarItem "{ email = \"rashad.sasaki@gmail.com\"" "" 
-                           , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
-                           , mkNavBarItem ", lookingForJob = True }" ""
-                           , mkNavBarItem "deriving (Hireable)" ""]
+-- CONTACT PAGE --
+{--
+contactInfo :: Rashad 
+contactInfo = Contact { email     = "rashad.sasaki@gmail.com"
+                      , location  = "Los Angeles, CA"
+                      , linkedIn  = ""
+                      , instagram = "COMING SOON" } 
+--}
+
+-- contactListItems :: Html ()
+-- contactListItems = mconcat [ mkNavBarItem "{ email = \"rashad.sasaki@gmail.com\"" "" 
+--                            , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
+--                            , mkNavBarItem ", lookingForJob = True }" ""
+--                            , mkNavBarItem "deriving (Hireable)" ""]
 
 pipe :: Html ()
 pipe = span_ "|"
 
 navBar :: [Html ()] -> Html ()
-navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading", href_ "./index.html"] "RΛSHΛD1030"
+navBar items = div_ [class_ "header"] (div_ [class_ "home-menu pure-menu pure-menu-horizontal pure-menu-fixed"] (do a_ [class_ "pure-menu-heading lowercase", href_ "./index.html"] "RλSHλD1030"
                                                                                                                     ul_ [class_ "pure-menu-list"] $ mconcat items))
                                                                                                                  
 {--
