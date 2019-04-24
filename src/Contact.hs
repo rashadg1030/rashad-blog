@@ -16,3 +16,12 @@ contactPage = baseTemplate $ div_ (do p_ "myContactInfo :: Rashad"
                                       p_ "myContactInfo = Contact { name = \"Rashad Gover\""
                                       p_ ", email = \"rashad.sasaki@gmail.com\""
                                       p_ ", location = \"Los Angeles, CA\" }")
+
+-- CONTACT PAGE --
+{--
+contactInfo :: Rashad 
+contactInfo = Contact { email     = "rashad.sasaki@gmail.com"
+                      , location  = "Los Angeles, CA"
+                      , linkedIn  = ""
+                      , instagram = "COMING SOON" } 
+--}

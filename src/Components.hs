@@ -51,46 +51,27 @@ navBarItems = (mkNavBarItem "data Rashad" "#") : [equalSignItem] ++ (L.intersper
                                                                                           , mkNavBarItem "Art" "#" 
                                                                                           , mkNavBarItem "Contact {..}" "./contact.html" ])
 
--- CONTACT PAGE --
-{--
-contactInfo :: Rashad 
-contactInfo = Contact { email     = "rashad.sasaki@gmail.com"
-                      , location  = "Los Angeles, CA"
-                      , linkedIn  = ""
-                      , instagram = "COMING SOON" } 
---}
+contentWrapper :: Html () -> Html ()
+contentWrapper inner = div_ [class_ "content-wrapper"] inner
 
--- contactListItems :: Html ()
--- contactListItems = mconcat [ mkNavBarItem "{ email = \"rashad.sasaki@gmail.com\"" "" 
---                            , mkNavBarItem ", location = \"Los Angeles, CA\"" ""
---                            , mkNavBarItem ", lookingForJob = True }" ""
---                            , mkNavBarItem "deriving (Hireable)" ""]
-                                                                                                                 
-{--
-<div class="splash-container">
-    <div class="splash">
-        <h1 class="splash-head">Big Bold Text</h1>
-        <p class="splash-subhead">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </p>
-        <p>
-            <a href="http://purecss.io" class="pure-button pure-button-primary">Get Started</a>
-        </p>
-    </div>
-</div>
---}
+content :: Html () -> Html () -> Html ()
+content title inner = div_ [class_ "content"] (do h2_ [class_ "content-head is-center"] title
+                                                  inner)
+                                                                                                                    
+grid4col :: Html () -> Html () -> Html () -> Html () -> Html ()
+grid4col g1 g2 g3 g4 = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g1
+                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g2
+                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g3
+                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g4) 
 
-{--
-<div class="header">
-    <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
-        <a class="pure-menu-heading" href="">Your Site</a>
+grid3col :: Html () -> Html () -> Html () -> Html ()
+grid3col g1 g2 g3 = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-lg-1-3"] g1
+                                               div_ [class_ "pure-u-1 pure-u-lg-1-3"] g2
+                                               div_ [class_ "pure-u-1 pure-u-lg-1-3"] g3) 
+            
+gridAsymm :: Html () -> Html () -> Html ()
+gridAsymm smallg bigg = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] smallg
+                                                   div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] bigg)
 
-        <ul class="pure-menu-list">
-            <li class="pure-menu-item pure-menu-selected"><a href="#" class="pure-menu-link">Home</a></li>
-            <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tour</a></li>
-            <li class="pure-menu-item"><a href="#" class="pure-menu-link">Sign Up</a></li>
-        </ul>
-    </div>
-</div>
---}
-
+footer :: Html () -> Html ()
+footer inner = div_ [class_ "footer l-box is-center"] inner

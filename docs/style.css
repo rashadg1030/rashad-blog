@@ -146,6 +146,32 @@ a.pure-button-primary {
     background: white;
 }
 
+.footer {
+    background: #111;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.is-center {
+    text-align: center;
+}
+
+.l-box {
+    padding: 1em;
+}
+
+.content-head {
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 2em 0 1em;
+}
+
+.content {
+    padding: 1em 1em 3em;
+}
+
 .lowercase {
     text-transform: none !important;
 }
