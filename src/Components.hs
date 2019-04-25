@@ -57,21 +57,25 @@ contentWrapper inner = div_ [class_ "content-wrapper"] inner
 content :: Html () -> Html () -> Html ()
 content title inner = div_ [class_ "content"] (do h2_ [class_ "content-head is-center"] title
                                                   inner)
+
+ribbon :: Html () -> Html () -> Html ()
+ribbon img desc = div_ [class_ "ribbon l-box-lrg pure-g"] (do div_ [class_ "l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] img
+                                                              div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] desc)
                                                                                                                     
 grid4col :: Html () -> Html () -> Html () -> Html () -> Html ()
-grid4col g1 g2 g3 g4 = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g1
-                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g2
-                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g3
-                                                  div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g4) 
+grid4col g1 g2 g3 g4 = div_ [class_ "pure-g"] (do div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g1
+                                                  div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g2
+                                                  div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g3
+                                                  div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"] g4) 
 
 grid3col :: Html () -> Html () -> Html () -> Html ()
-grid3col g1 g2 g3 = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-lg-1-3"] g1
-                                               div_ [class_ "pure-u-1 pure-u-lg-1-3"] g2
-                                               div_ [class_ "pure-u-1 pure-u-lg-1-3"] g3) 
+grid3col g1 g2 g3 = div_ [class_ "pure-g"] (do div_ [class_ "l-box pure-u-1 pure-u-lg-1-3"] g1
+                                               div_ [class_ "l-box pure-u-1 pure-u-lg-1-3"] g2
+                                               div_ [class_ "l-box pure-u-1 pure-u-lg-1-3"] g3) 
             
 gridAsymm :: Html () -> Html () -> Html ()
-gridAsymm smallg bigg = div_ [class_ "pure-g"] (do div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] smallg
-                                                   div_ [class_ "pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] bigg)
+gridAsymm smallg bigg = div_ [class_ "pure-g"] (do div_ [class_ "l-box-lrg pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] smallg
+                                                   div_ [class_ "l-box-lrg pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] bigg)
 
 footer :: Html () -> Html ()
 footer inner = div_ [class_ "footer l-box is-center"] inner
