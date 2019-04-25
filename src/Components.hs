@@ -74,8 +74,8 @@ grid3col g1 g2 g3 = div_ [class_ "pure-g"] (do div_ [class_ "l-box pure-u-1 pure
                                                div_ [class_ "l-box pure-u-1 pure-u-lg-1-3"] g3) 
             
 gridAsymm :: Html () -> Html () -> Html ()
-gridAsymm smallg bigg = div_ [class_ "pure-g"] (do div_ [class_ "l-box-lrg pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] smallg
-                                                   div_ [class_ "l-box-lrg pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] bigg)
+gridAsymm smallg bigg = div_ [class_ "pure-g"] (do div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-2-5"] smallg
+                                                   div_ [class_ "l-box pure-u-1 pure-u-md-1-2 pure-u-lg-3-5"] bigg)
 
 footer :: Html () -> Html ()
 footer inner = div_ [class_ "footer l-box is-center"] inner
