@@ -193,6 +193,11 @@ a.pure-button-primary {
     background: white;
 }
 
+.pure-img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
 .footer {
     background: #111;
     position: fixed;
@@ -219,6 +224,10 @@ a.pure-button-primary {
     padding: 1em 1em 3em;
 }
 
+.content-bottom {
+    padding-bottom: 6em;
+}
+
 .lowercase {
     text-transform: none !important;
 }
@@ -235,5 +244,5 @@ a.pure-button-primary {
 
 .l-box-lrg {
     padding: 2em;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    /* border-bottom: 1px solid rgba(0,0,0,0.1); */
 }

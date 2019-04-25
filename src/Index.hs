@@ -15,7 +15,7 @@ indexPage :: Html ()
 indexPage = baseTemplate (do splashContainer "Rashad Gover" "Abstraction Engineer for Hire" "Download Resume" "./Rashad_Gover.pdf" -- Need content container after this!!
                              contentWrapper $ (do content "What I Do" $ grid3col testDiv testDiv testDiv
                                                   ribbon (img_ [class_ "pure-img-responsive", src_ "../img/education-graphing-paper-homework-167682.jpg", width_ "300"]) (do h2_ [class_ "content-head content-head-ribbon"] "Laboris nisi ut aliquip."; p_ "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-                                                  content "Good Vibrations" $ gridAsymm testDiv testDiv
+                                                  with (content "Good Vibrations" $ gridAsymm testDiv testDiv) [class_ " content-bottom"]
                                                   footer $ p_ "This the footer"))
 
 testDiv :: Html ()
