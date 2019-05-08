@@ -7,7 +7,7 @@ import Data.Text
 
 data Post = Post { title :: Text
                  , date :: Text
-                 , content :: Text
+                 , href :: Text
                  , tags :: [Text]
                  }           
 
