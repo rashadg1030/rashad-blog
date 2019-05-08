@@ -17,32 +17,5 @@ indexPage = baseTemplate (do splashContainer "Rashad Gover" "Abstraction Enginee
                                                   ribbon (img_ [class_ "pure-img-responsive", src_ "../img/education-graphing-paper-homework-167682.jpg", width_ "300"]) (do h2_ [class_ "content-head content-head-ribbon"] "Good Vibrations"; p_ randomText)
                                                   with (content "Contact Me" $ gridAsymm contactForm testDiv) [class_ " content-bottom"]
                                                   footer $ p_ "This the footer"))
-
-div1 :: Html () -> Html () -> Html ()
-div1 title para = (do h1_ title 
-                      p_  para)
-
-contactForm :: Html ()
-contactForm = form_ [class_ "pure-form pure-form-stacked"] (fieldset_ (do label_ [for_ "name"] "Your Name"
-                                                                          input_ [id_ "name", type_ "text", placeholder_ "Your Name"]
-                                                                          label_ [for_ "email"] "Your Email"
-                                                                          input_ [id_ "email", type_ "email", placeholder_ "Your Email"]
-                                                                          label_ [for_ "message"] "Your Message"
-                                                                          textarea_ [id_ "message", placeholder_ "Your Message"] ""
-                                                                          div_ [class_ "is-center"] $ button_ [class_ "pure-button", type_ "submit"] "Send"))
-
-randomText :: Html ()
-randomText = "Lorem ipsum do lasd did ads. do re mi fas goj dhasd yt aohdfj deeyu iope. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-testDiv :: Html ()
-testDiv = (do h1_ "Title"; p_ randomText)
-
-splashContainer :: Html () -> Html () -> Html () -> Text -> Html ()
-splashContainer title subTitle buttonName buttonLink = div_ [class_ "splash-container"] (div_ [class_ "splash"] (do h1_ [class_ "splash-head"] title 
-                                                                                                                    p_ [class_ "splash-subhead"] subTitle
-                                                                                                                    p_ (a_ [href_ buttonLink, class_ "pure-button pure-button-primary", download_ "Rashad_Gover"] buttonName))) 
-                                                                                                                
-
-                                            
               
 

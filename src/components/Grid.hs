@@ -1,15 +1,15 @@
 module Components.Grid (threeGrid, fourGrid, twoThreeGrid, threeTwoGrid) where
 
-threeGrid :: (Html (), Html (), Html ()) -> Html ()
-threeGrid tuple = undefined
+threeGrid :: Html () -> Html () -> Html () -> Html ()
+threeGrid div1 div2 div3 = undefined
 
-fourGrid :: (Html (), Html (), Html (), Html ()) -> Html ())
-fourGrid tuple = undefined
+fourGrid ::  Html () -> Html () -> Html () -> Html () -> Html ())
+fourGrid div1 div2 div3 div4 = undefined
 
-twoThreeGrid :: (Html (), Html ()) -> Html ()
-twoThreeGrid tuple = undefined
+twoThreeGrid :: Html () -> Html () -> Html ()
+twoThreeGrid div1 div2 = undefined
 
-threeTwoGrid :: (Html (), Html ()) -> Html ())
-threeTwoGrid tuple = undefined
+threeTwoGrid :: Html () -> Html () -> Html ()
+threeTwoGrid div1 div2 = undefined
 
 

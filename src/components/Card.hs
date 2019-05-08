@@ -1,4 +1,11 @@
-module Components.Card (card) where
+module Components.Card (Card, cardToHtml) where
 
-card :: Text -> Text -> Text -> Html ()
-card 
+import Components.Image
+
+data Card = Card { title :: Text,
+                   image :: Image,
+                   content :: Text
+                 }
+
+cardToHtml :: Card -> Html ()
+cardToHtml card = undefined 
