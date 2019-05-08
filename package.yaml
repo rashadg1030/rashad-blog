@@ -25,6 +25,9 @@ dependencies:
 - text
 
 library:
+  exposed-modules: 
+    - Components.Dynamic
+    - Components.Static
   source-dirs: src
 
 executables:
