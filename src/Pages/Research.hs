@@ -1,0 +1,1 @@
+module Pages.Research (researchPage) where
