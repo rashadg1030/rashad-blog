@@ -1,13 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExtendedDefaultRules #-}
 
-module Pages.Index (indexPage) where
+module Pages.Index (render) where
 
-import Data.Text 
+import Data.Text.Internal.Lazy
 import Data.Monoid
 import Lucid
 import Lucid.Base
 import Lucid.Html5
+
+render :: Text
+render = renderText indexPage
 
 indexPage :: Html ()
 indexPage = undefined

@@ -1,4 +1,14 @@
-module Pages.Contact (contactPage) where
+{-# LANGUAGE OverloadedStrings #-}
+
+module Pages.Contact (render) where
+
+import Lucid
+import Lucid.Base
+import Lucid.Html5
+import Data.Text.Internal.Lazy
+
+render :: Text
+render = renderText contactPage
 
 -- Add Canon Later
 contactPage :: Html ()
