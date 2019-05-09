@@ -28,6 +28,12 @@ library:
   exposed-modules: 
     - Components.Dynamic
     - Components.Static
+    - Pages.Art
+    - Pages.Contact
+    - Pages.Index
+    - Pages.Library
+    - Pages.Research
+    - Pages.Software
   source-dirs: src
 
 executables:

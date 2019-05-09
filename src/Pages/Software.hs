@@ -11,4 +11,4 @@ render :: Text
 render = renderText softwarePage
 
 softwarePage :: Html ()
-softwarePage = undefined
+softwarePage = h1_ "My software adventures."

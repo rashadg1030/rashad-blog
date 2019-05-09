@@ -8,7 +8,7 @@ import Lucid.Html5
 import Data.Text
 
 navbar :: Html ()
-navbar = div_ [class_ "navbar"] (do navbarItem "data Rashad" "./bio.html"
+navbar = div_ [class_ "navbar"] (do navbarItem "data Rashad" "./index.html"
                                     navbarItem "=" ""
                                     navbarItem "Software" "./software.html"
                                     navbarItem "Research" "./research.html"

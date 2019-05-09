@@ -12,7 +12,7 @@ render = renderText contactPage
 
 -- Add Canon Later
 contactPage :: Html ()
-contactPage = undefined
+contactPage = h1_ "I live in a hole in Nevada."
 
 -- CONTACT PAGE DESIGN --
 {--
