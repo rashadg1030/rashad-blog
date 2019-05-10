@@ -11,4 +11,5 @@ import Data.Text
 inBase :: Html () -> Html ()
 inBase inner = doctypehtml_ ( do header
                                  body_ ( do navbar
-                                            inner ) )
+                                            inner 
+                                            footer ) )

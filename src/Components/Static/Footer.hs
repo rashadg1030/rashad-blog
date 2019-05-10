@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Components.Static.Footer (footer) where 
 
 import Lucid
@@ -6,4 +8,4 @@ import Lucid.Html5
 import Data.Text
 
 footer :: Html ()
-footer = undefined
+footer = footer_ [class_ "footer"] "This is a footer."

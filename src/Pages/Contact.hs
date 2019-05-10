@@ -6,9 +6,10 @@ import Lucid
 import Lucid.Base
 import Lucid.Html5
 import Data.Text.Internal.Lazy
+import Components.Dynamic.Base
 
 render :: Text
-render = renderText contactPage
+render = renderText $ inBase contactPage
 
 -- Add Canon Later
 contactPage :: Html ()

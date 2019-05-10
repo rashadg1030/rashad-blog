@@ -7,14 +7,13 @@ import Data.Monoid
 import Lucid
 import Lucid.Base
 import Lucid.Html5
-import Components.Static.Navbar
+import Components.Dynamic.Base
 
 render :: Text
-render = renderText indexPage
+render = renderText $ inBase indexPage
 
 indexPage :: Html ()
-indexPage = do navbar
-               h1_ "Home Page"
+indexPage = do h1_ "Home Page"
 
 -- Add Canon Later
 -- indexPage :: Html ()
