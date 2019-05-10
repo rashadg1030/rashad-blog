@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Pages.Index (render) where
 
@@ -9,11 +10,13 @@ import Lucid.Base
 import Lucid.Html5
 import Components.Dynamic.Base
 import Components.Dynamic.Post
+import Control.Monad.IO.Class
 
-render :: Text
-render = renderText $ inBase indexPage
+render :: IO Text
+render = do
+           renderText $ inBase indexPage
 
-indexPage :: Html ()
+indexPage :: HtmlT IO ()
 indexPage = do h1_ "Home Page"
                p_ "Welcome to my blog! My name is Rashad." 
                p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional and/or statically typed programming languages like Haskell and Scheme."
@@ -21,11 +24,25 @@ indexPage = do h1_ "Home Page"
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
                p_ "Enjoy!"
 
-archive :: Html ()
-archive = undefined
+
+postToListItem :: Post -> HtmlT IO ()
+postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do h1_ $ toHtml title
+                                                                    p_ $ toHtml date
+                                                                -- tags 
+                                                                )
 
 getPosts :: IO [Post]
 getPosts = undefined 
 
--- Add Canon Later
+archive :: HtmlT IO ()
+archive = div_ [class_ "archive"] (do h1_ "Archive"
+                                      ul_ [class_ "archive-list"] (_ postToListItem getPosts))
+                     
+
+
+-- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
+-- (a -> m b) 
+                                                               
+-- renderTextT :: Monad m => HtmlT m a -> m Text
+
 

@@ -7,6 +7,8 @@ import Lucid.Base
 import Lucid.Html5
 import Data.Text
 
+-- Add Canon Later
+
 navbar :: Html ()
 navbar = div_ [class_ "navbar"] (do navbarItem "data Rashad" "./index.html"
                                     equals
