@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Components.Dynamic.Base (inBase) where
 
 import Components.Static.Header
@@ -11,5 +13,5 @@ import Data.Text
 inBase :: Html () -> Html ()
 inBase inner = doctypehtml_ ( do header
                                  body_ ( do navbar
-                                            inner 
+                                            div_ [class_ "main"] inner 
                                             footer ) )

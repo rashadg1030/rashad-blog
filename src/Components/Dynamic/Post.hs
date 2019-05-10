@@ -1,3 +1,6 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
+
 module Components.Dynamic.Post (Post, postToHtml) where
 
 import Lucid
@@ -8,8 +11,10 @@ import Data.Text
 data Post = Post { title :: Text
                  , date :: Text
                  , href :: Text
-                 , tags :: [Text]
-                 }           
+                 , tags :: [Text] }           
 
 postToHtml :: Post -> Html ()
-postToHtml post = undefined
+postToHtml Post {..} = div_ [class_ "post", href_ href] (do h1_ $ toHtml title
+                                                            p_ $ toHtml date
+                                                            -- tags 
+                                                        )

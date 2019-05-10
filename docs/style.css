@@ -2,15 +2,30 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
 }
 
-/* .navbar {
-    float: right;
-} */
+h1 {
+    font-family: 'Raleway', sans-serif;
+}
+
+.main {
+    padding: 0.5em;
+}
+
+.navbar {
+    padding: 0.5em;
+}
 
 .navbar-item {
     text-decoration: none;
     color: black;
+    padding: 0.25em;
+}
+
+.navbar-item:hover {
+    color: white;
+    background-color: black;
 }
 
 .footer {

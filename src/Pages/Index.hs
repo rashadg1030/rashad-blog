@@ -8,19 +8,24 @@ import Lucid
 import Lucid.Base
 import Lucid.Html5
 import Components.Dynamic.Base
+import Components.Dynamic.Post
 
 render :: Text
 render = renderText $ inBase indexPage
 
 indexPage :: Html ()
 indexPage = do h1_ "Home Page"
+               p_ "Welcome to my blog! My name is Rashad." 
+               p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional and/or statically typed programming languages like Haskell and Scheme."
+               p_ "I'm discovering the intersection between logic, mathematics, and computation."
+               p_ "On my blog you will find a wide range of topics, from software design to generative art."
+               p_ "Enjoy!"
+
+archive :: Html ()
+archive = undefined
+
+getPosts :: IO [Post]
+getPosts = undefined 
 
 -- Add Canon Later
--- indexPage :: Html ()
--- indexPage = baseTemplate (do splashContainer "Rashad Gover" "Abstraction Engineer for Hire" "Download Resume" "./Rashad_Gover.pdf" -- Need content container after this!!
---                              contentWrapper $ (do content "What I Do" $ grid3col (div1 "Learn" randomText) (div1 "Build" randomText) (div1 "Teach" randomText)
---                                                   ribbon (img_ [class_ "pure-img-responsive", src_ "../img/education-graphing-paper-homework-167682.jpg", width_ "300"]) (do h2_ [class_ "content-head content-head-ribbon"] "Good Vibrations"; p_ randomText)
---                                                   with (content "Contact Me" $ gridAsymm contactForm testDiv) [class_ " content-bottom"]
---                                                   footer $ p_ "This the footer"))
-              
 
