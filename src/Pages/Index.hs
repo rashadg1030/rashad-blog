@@ -13,8 +13,7 @@ import Components.Dynamic.Post
 import Control.Monad.IO.Class
 
 render :: IO Text
-render = do
-           renderText $ inBase indexPage
+render = renderTextT indexPage
 
 indexPage :: HtmlT IO ()
 indexPage = do h1_ "Home Page"
@@ -23,20 +22,24 @@ indexPage = do h1_ "Home Page"
                p_ "I'm discovering the intersection between logic, mathematics, and computation."
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
                p_ "Enjoy!"
+               archive
 
 
 postToListItem :: Post -> HtmlT IO ()
 postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do h1_ $ toHtml title
-                                                                    p_ $ toHtml date
+                                                                   p_ $ toHtml date
                                                                 -- tags 
                                                                 )
 
-getPosts :: IO [Post]
-getPosts = undefined 
-
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"
-                                      ul_ [class_ "archive-list"] (_ postToListItem getPosts))
+                                      ul_ [class_ "archive-list"] (do posts <- getPosts
+                                                                      mapM_ postToListItem posts))
+
+getPosts :: HtmlT IO [Post]
+getPosts = liftIO $ do
+                      undefined 
+                                                                      
                      
 
 

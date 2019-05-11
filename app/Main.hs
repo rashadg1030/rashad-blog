@@ -15,13 +15,10 @@ import qualified Pages.Software as Software
 
 main :: IO ()
 main = do
-         indexHtml <- x
+         indexHtml <- Index.render
          T.writeFile "./docs/index.html" indexHtml
          T.writeFile "./docs/software.html" Software.render   
          T.writeFile "./docs/research.html" Research.render
          T.writeFile "./docs/library.html" Library.render 
          T.writeFile "./docs/art.html" Art.render 
          T.writeFile "./docs/contact.html" Contact.render  
-
-x :: IO Text         
-x = undefined
