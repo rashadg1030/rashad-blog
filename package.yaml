@@ -24,6 +24,7 @@ dependencies:
 - lucid
 - text
 - mmorph
+- directory
 
 library:
   exposed-modules: 

@@ -3,7 +3,12 @@
 
 module Pages.Index (render) where
 
-import Data.Text.Internal.Lazy
+import Data.Text.IO -- Which text to use??
+import Data.Text
+
+import qualified Data.Text.Internal.Lazy as Lazy
+--import qualified Data.Text.Lazy.IO as LazyIO
+
 import Data.Monoid
 import Lucid
 import Lucid.Base
@@ -11,10 +16,12 @@ import Lucid.Html5
 import Components.Dynamic.Base
 import Components.Dynamic.Post
 import Control.Monad.IO.Class
+import System.Directory
+import Prelude hiding (lines, readFile)
 
-render :: IO Text
+render :: IO Lazy.Text
 render = renderTextT indexPage
-
+ 
 indexPage :: HtmlT IO ()
 indexPage = do h1_ "Home Page"
                p_ "Welcome to my blog! My name is Rashad." 
@@ -36,15 +43,35 @@ archive = div_ [class_ "archive"] (do h1_ "Archive"
                                       ul_ [class_ "archive-list"] (do posts <- getPosts
                                                                       mapM_ postToListItem posts))
 
+contentToPost :: Text -> Post
+contentToPost = linesToPost . lines
+  where 
+    linesToPost :: [Text] -> Post
+    linesToPost (x:y:_) = Post{ title = x, date = y, href = "#", tags = [] }
+    linesToPost _       = Post{ title = "Unknown", date = "Unknown", href = "#", tags = [] } 
+
 getPosts :: HtmlT IO [Post]
 getPosts = liftIO $ do
-                      undefined 
+  filePaths <- getDirectoryContents "../../posts/"
+  contents <- mapM readFile ((++) "../../posts/" <$> filePaths)
+  let posts = contentToPost <$> contents
+  return posts
+
+testGetPosts :: IO ()
+testGetPosts = do
+  filePaths <- listDirectory "../../posts/"
+  --print ((++) "../../posts/" <$> filePaths)
+  contents <- mapM readFile ((++) "../../posts/" <$> filePaths)
+  let posts = contentToPost <$> contents 
+  print posts
+
                                                                       
                      
 
 
 -- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
--- (a -> m b) 
+
+--mapM :: (Traversable t, Monad m) => (a -> m b) -> t a -> m (t b)
                                                                
 -- renderTextT :: Monad m => HtmlT m a -> m Text
 

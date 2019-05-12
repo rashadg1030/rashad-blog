@@ -11,4 +11,5 @@ import Data.Text
 data Post = Post { title :: Text
                  , date :: Text
                  , href :: Text
-                 , tags :: [Text] }           
+                 , tags :: [Text] }      
+  deriving (Show, Eq)     
