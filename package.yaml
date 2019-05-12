@@ -24,6 +24,7 @@ dependencies:
 - lucid
 - text
 - mmorph
+- transformers
 - directory
 
 library:

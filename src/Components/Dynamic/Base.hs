@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Components.Dynamic.Base (inBase) where
+module Components.Dynamic.Base (inBase, inBaseIO) where
 
 import Components.Static.Header
 import Components.Static.Navbar
@@ -15,3 +15,9 @@ inBase inner = doctypehtml_ ( do header
                                  body_ ( do navbar
                                             div_ [class_ "main"] inner 
                                             footer ) )
+
+inBaseIO :: HtmlT IO () -> HtmlT IO ()
+inBaseIO inner = doctypehtml_ ( do headerIO
+                                   body_ ( do navbarIO
+                                              div_ [class_ "main"] inner
+                                              footerIO ) )

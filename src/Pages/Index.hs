@@ -15,12 +15,13 @@ import Lucid.Base
 import Lucid.Html5
 import Components.Dynamic.Base
 import Components.Dynamic.Post
+import Control.Monad.Trans.Class
 import Control.Monad.IO.Class
 import System.Directory
 import Prelude hiding (lines, readFile)
 
 render :: IO Lazy.Text
-render = renderTextT indexPage
+render = renderTextT $ inBaseIO indexPage -- missing navbar
  
 indexPage :: HtmlT IO ()
 indexPage = do h1_ "Home Page"
@@ -31,16 +32,15 @@ indexPage = do h1_ "Home Page"
                p_ "Enjoy!"
                archive
 
-
 postToListItem :: Post -> HtmlT IO ()
 postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do h1_ $ toHtml title
                                                                    p_ $ toHtml date
                                                                 -- tags 
-                                                                )
+                                                               )
 
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"
-                                      ul_ [class_ "archive-list"] (do posts <- getPosts
+                                      ul_ [class_ "archive-list"] (do posts <- liftIO getPosts
                                                                       mapM_ postToListItem posts))
 
 contentToPost :: Text -> Post
@@ -50,7 +50,7 @@ contentToPost = linesToPost . lines
     linesToPost (x:y:_) = Post{ title = x, date = y, href = "#", tags = [] }
     linesToPost _       = Post{ title = "Unknown", date = "Unknown", href = "#", tags = [] } 
 
-getPosts :: HtmlT IO [Post]
+getPosts :: IO [Post] -- Sort posts by date after fetched
 getPosts = liftIO $ do
   filePaths <- listDirectory "./posts/" -- From the perspective of the location of Main.hs
   contents <- mapM readFile ((++) "./posts/" <$> filePaths)
