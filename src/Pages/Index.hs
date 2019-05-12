@@ -52,15 +52,14 @@ contentToPost = linesToPost . lines
 
 getPosts :: HtmlT IO [Post]
 getPosts = liftIO $ do
-  filePaths <- getDirectoryContents "../../posts/"
-  contents <- mapM readFile ((++) "../../posts/" <$> filePaths)
+  filePaths <- listDirectory "./posts/" -- From the perspective of the location of Main.hs
+  contents <- mapM readFile ((++) "./posts/" <$> filePaths)
   let posts = contentToPost <$> contents
   return posts
 
 testGetPosts :: IO ()
 testGetPosts = do
-  filePaths <- listDirectory "../../posts/"
-  --print ((++) "../../posts/" <$> filePaths)
+  filePaths <- listDirectory "../../posts"
   contents <- mapM readFile ((++) "../../posts/" <$> filePaths)
   let posts = contentToPost <$> contents 
   print posts
