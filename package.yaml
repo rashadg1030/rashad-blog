@@ -23,8 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - lucid
 - text
-- mmorph
-- transformers
+# - transformers
 - directory
 - pandoc
 

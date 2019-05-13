@@ -15,7 +15,6 @@ import Lucid.Base
 import Lucid.Html5
 import Components.Dynamic.Base
 import Components.Dynamic.Post
-import Control.Monad.Trans.Class
 import Control.Monad.IO.Class
 import System.Directory
 import Prelude hiding (lines, readFile)
