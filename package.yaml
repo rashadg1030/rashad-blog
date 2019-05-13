@@ -26,6 +26,7 @@ dependencies:
 - mmorph
 - transformers
 - directory
+- pandoc
 
 library:
   exposed-modules: 
@@ -37,6 +38,7 @@ library:
     - Pages.Library
     - Pages.Research
     - Pages.Software
+    - Converters.MDtoHTML
   source-dirs: src
 
 executables:
