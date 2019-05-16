@@ -41,6 +41,7 @@ archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"
                                       ul_ [class_ "archive-list"] (do posts <- liftIO getPosts
                                                                       mapM_ postToListItem posts))
+                                                                      
 --- The following functions will have to change to parse markdown format
 contentToPost :: Text -> Post
 contentToPost = linesToPost . lines
