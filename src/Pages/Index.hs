@@ -63,14 +63,8 @@ testGetPosts = do
   let posts = contentToPost <$> contents 
   print posts
 
-                                                                      
-                     
-
-
 -- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
-
---mapM :: (Traversable t, Monad m) => (a -> m b) -> t a -> m (t b)
-                                                               
+-- mapM :: (Traversable t, Monad m) => (a -> m b) -> t a -> m (t b) 
 -- renderTextT :: Monad m => HtmlT m a -> m Text
 
 
