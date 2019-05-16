@@ -12,6 +12,7 @@ import qualified Pages.Index as Index
 import qualified Pages.Library as Library
 import qualified Pages.Research as Research
 import qualified Pages.Software as Software
+import Converters.MDtoHTML
 
 main :: IO ()
 main = do
@@ -22,3 +23,4 @@ main = do
          T.writeFile "./docs/library.html" Library.render 
          T.writeFile "./docs/art.html" Art.render 
          T.writeFile "./docs/contact.html" Contact.render  
+         mdToHtml "./posts/1.markdown" "./docs/1.html" 
