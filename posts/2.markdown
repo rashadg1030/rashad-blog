@@ -1,6 +1,5 @@
 ---
 title: My Second Post
-author: Rashad Gover
 date: 05/16/19
 ---
 

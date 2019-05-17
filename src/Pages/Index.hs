@@ -29,7 +29,7 @@ indexPage = do h1_ "Home Page"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
-postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do h1_ $ toHtml title
+postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do p_ $ toHtml title
                                                                    p_ $ toHtml date
                                                                 -- tags
                                                                )
@@ -46,12 +46,12 @@ getPosts = liftIO $ do
   let posts = contentToPost <$> contents
   return posts
 
---- The following functions will have to change to parse markdown format
+--- The following functions will have to change to parse markdown format. Might need actual parser 
 contentToPost :: Text -> Post
 contentToPost = linesToPost . lines
   where
     linesToPost :: [Text] -> Post
-    linesToPost (x:y:_) = Post{ title = x, date = y, href = "#", tags = [] }
+    linesToPost (_:x:y:_) = Post{ title = x, date = y, href = "#", tags = [] }
     linesToPost _       = Post{ title = "Unknown", date = "Unknown", href = "#", tags = [] }
 
 testGetPosts :: IO ()

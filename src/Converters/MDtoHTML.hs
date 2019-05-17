@@ -16,7 +16,7 @@ mdToHtml inPath = do
   template <- baseTemplate
   markdown <- liftIO $ T.readFile inPath 
   result <- liftIO $ runIO $ do
-    ast <- readMarkdown def{ readerExtensions = extensionsFromList [Ext_yaml_metadata_block] } markdown
+    ast <- readMarkdown def{ readerExtensions = pandocExtensions } markdown
     writeHtml5String def{ writerTemplate = Just template } ast
   html <- liftIO $ handleError result
   return html

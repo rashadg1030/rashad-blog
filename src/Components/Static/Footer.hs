@@ -8,7 +8,9 @@ import Lucid.Html5
 import Data.Text
 
 footer :: Html ()
-footer = footer_ [class_ "footer"] "This is a footer."
+footer = div_ [class_ "footer"] $ do hr_ []
+                                     p_ "This is a footer."
 
 footerIO :: HtmlT IO ()
-footerIO = footer_ [class_ "footer"] "This is a footer."
+footerIO = div_ [class_ "footer"] $ do hr_ []
+                                       p_ "This is a footer."
