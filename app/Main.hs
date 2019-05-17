@@ -13,6 +13,7 @@ import qualified Pages.Index             as Index
 import qualified Pages.Library           as Library
 import qualified Pages.Research          as Research
 import qualified Pages.Software          as Software
+import System.Directory
 
 main :: IO ()
 main = do
@@ -23,5 +24,9 @@ main = do
   TL.writeFile "./docs/library.html" Library.render
   TL.writeFile "./docs/art.html" Art.render
   TL.writeFile "./docs/contact.html" Contact.render
-  post1 <- mdToHtml "./posts/1.markdown"
-  T.writeFile "./docs/1.html" post1 
+  postPaths <- listDirectory "./posts/"
+  let names = dropExt <$> postPaths
+  mapM_ mdToHtml names
+
+dropExt :: FilePath -> String
+dropExt = takeWhile ('.' /=)  

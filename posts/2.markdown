@@ -3,5 +3,4 @@ title: My Second Post
 date: 05/16/19
 ---
 
-# My Second Post
 This is my second post. Thanks for looking at it again.
