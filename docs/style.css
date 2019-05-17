@@ -29,9 +29,24 @@ h1 {
 }
 
 .post-item {
-    margin: 0.5em;
-    padding: 1em;
     list-style-type: none;
+    margin: 0.75em;
+    float: left;
+}
+
+.post-item > * {
+    padding: 0.25em;
+}
+
+.post-item-link {
+    text-decoration: none;
+    color: black;
+    font-style: italic;
+}
+
+.post-item-link:hover {
+    color:white;
+    background-color: black;
 }
 
 .footer {

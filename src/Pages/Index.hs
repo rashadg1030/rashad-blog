@@ -30,10 +30,10 @@ indexPage = do h1_ "Home Page"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
-postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do a_ [href_ href] $ toHtml title
-                                                                   p_ $ toHtml date
-                                                                -- tags
-                                                               )
+postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "post-item-link"] (toHtml title)
+                                                       p_ $ toHtml date
+                                                       -- tags 
+                                                   ) 
 
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"
@@ -48,7 +48,7 @@ getPosts = liftIO $ do
   let dates  = contentToDate <$> contents
   let hrefs  = (htmlExt . dropExt)  <$> filePaths
   let posts  = zipToPosts titles dates hrefs
-  return $ sort posts
+  return $ reverse . sort $ posts
 
 zipToPosts :: [T.Text] -> [T.Text] -> [FilePath] -> [Post]
 zipToPosts ts ds hs = tupleToPost <$> zip3 ts ds hs
