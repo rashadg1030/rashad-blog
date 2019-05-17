@@ -15,6 +15,9 @@ import qualified Pages.Research          as Research
 import qualified Pages.Software          as Software
 import System.Directory
 
+
+-- NOTE!! File paths are relative to where you run the executable
+
 main :: IO ()
 main = do
   indexHtml <- Index.render
@@ -25,8 +28,11 @@ main = do
   TL.writeFile "./docs/art.html" Art.render
   TL.writeFile "./docs/contact.html" Contact.render
   postPaths <- listDirectory "./posts/"
-  let names = dropExt <$> postPaths
+  let names = Index.dropExt <$> postPaths
   mapM_ mdToHtml names
 
-dropExt :: FilePath -> String
-dropExt = takeWhile ('.' /=)  
+
+testGetPosts :: IO ()
+testGetPosts = do
+  posts <- Index.getPosts 
+  print posts  

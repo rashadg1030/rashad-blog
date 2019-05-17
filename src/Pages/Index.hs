@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
-module Pages.Index (render) where
+module Pages.Index (render, dropExt, getPosts) where
 
-import           Data.Text
-import           Data.Text.IO
-import qualified Data.Text.Internal.Lazy as Lazy
 import           Components.Dynamic.Base
 import           Components.Dynamic.Post
 import           Control.Monad.IO.Class
 import           Data.Monoid
+import qualified Data.Text               as T
+import qualified Data.Text.Internal.Lazy as Lazy
+import           Data.Text.IO            hiding (putStrLn)
 import           Lucid
 import           Lucid.Base
 import           Lucid.Html5
@@ -29,7 +29,7 @@ indexPage = do h1_ "Home Page"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
-postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do p_ $ toHtml title
+postToListItem Post{..} = li_ [class_ "post-item", href_ href] (do a_ [href_ href] $ toHtml title
                                                                    p_ $ toHtml date
                                                                 -- tags
                                                                )
@@ -41,28 +41,43 @@ archive = div_ [class_ "archive"] (do h1_ "Archive"
 
 getPosts :: IO [Post] -- Sort posts by date after fetched
 getPosts = liftIO $ do
-  filePaths <- listDirectory "./posts/" -- From the perspective of the location of Main.hs
+  filePaths <- listDirectory "./posts/"
   contents <- mapM readFile ((++) "./posts/" <$> filePaths)
-  let posts = contentToPost <$> contents
+  let titles = contentToTitle <$> contents
+  let dates  = contentToDate <$> contents
+  let hrefs  = (htmlExt . dropExt)  <$> filePaths
+  let posts  = zipToPosts titles dates hrefs
   return posts
 
---- The following functions will have to change to parse markdown format. Might need actual parser 
-contentToPost :: Text -> Post
-contentToPost = linesToPost . lines
+zipToPosts :: [T.Text] -> [T.Text] -> [FilePath] -> [Post]
+zipToPosts ts ds hs = tupleToPost <$> zip3 ts ds hs
   where
-    linesToPost :: [Text] -> Post
-    linesToPost (_:x:y:_) = Post{ title = x, date = y, href = "#", tags = [] }
-    linesToPost _       = Post{ title = "Unknown", date = "Unknown", href = "#", tags = [] }
+    tupleToPost :: (T.Text, T.Text, String) -> Post
+    tupleToPost (t, d, h) = Post { title = t, date = d, href = T.pack $ "./" <> h, tags = [] }
 
-testGetPosts :: IO ()
-testGetPosts = do
-  filePaths <- listDirectory "../../posts"
-  contents <- mapM readFile ((++) "../../posts/" <$> filePaths)
-  let posts = contentToPost <$> contents
-  print posts
+dropExt :: FilePath -> String
+dropExt = takeWhile ('.' /=)
+
+htmlExt :: String -> FilePath
+htmlExt = (\x -> x ++ ".html")
+
+(#!!) :: Int -> [a] -> a
+(#!!) = flip (!!)
+
+contentToTitle :: T.Text -> T.Text
+contentToTitle = parseTitle . (1 #!!) . T.lines
+  where
+    parseTitle :: T.Text -> T.Text
+    parseTitle = T.dropWhile (' '==) . T.dropWhile (\x -> or $ (x==) <$> ['t', 'i', 'l', 'e', ':'])
+
+contentToDate :: T.Text -> T.Text
+contentToDate = parseDate . (2 #!!) . T.lines
+  where
+    parseDate :: T.Text -> T.Text
+    parseDate = T.dropWhile (' '==) . T.dropWhile (\x -> or $ (x==) <$> ['d', 'a', 't', 'e', ':'])
 
 -- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
 -- mapM :: (Traversable t, Monad m) => (a -> m b) -> t a -> m (t b)
--- renderTextT :: Monad m => HtmlT m a -> m Text
+-- renderTextT :: Monad m => HtmlT m a -> m T.Text
 
 
