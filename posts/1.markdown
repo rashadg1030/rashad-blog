@@ -1,6 +1,6 @@
 ---
 title: Happy New Year!
-date: 01/02/19
+date: 01-02-2019
 ---
 
 Happy New Year! What better way to start the year off than starting a blog? For the record, starting this blog is not a New Year resolution or anything like that. I’ve been thinking about starting this blog for some time now, but have put it off for two reasons:

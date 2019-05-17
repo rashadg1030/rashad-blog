@@ -15,6 +15,7 @@ import           Lucid.Base
 import           Lucid.Html5
 import           Prelude                 hiding (lines, readFile)
 import           System.Directory
+import Data.List
 
 render :: IO Lazy.Text
 render = renderTextT $ inBaseIO indexPage
@@ -39,7 +40,7 @@ archive = div_ [class_ "archive"] (do h1_ "Archive"
                                       ul_ [class_ "archive-list"] (do posts <- liftIO getPosts
                                                                       mapM_ postToListItem posts))
 
-getPosts :: IO [Post] -- Sort posts by date after fetched
+getPosts :: IO [Post]
 getPosts = liftIO $ do
   filePaths <- listDirectory "./posts/"
   contents <- mapM readFile ((++) "./posts/" <$> filePaths)
@@ -47,7 +48,7 @@ getPosts = liftIO $ do
   let dates  = contentToDate <$> contents
   let hrefs  = (htmlExt . dropExt)  <$> filePaths
   let posts  = zipToPosts titles dates hrefs
-  return posts
+  return $ sort posts
 
 zipToPosts :: [T.Text] -> [T.Text] -> [FilePath] -> [Post]
 zipToPosts ts ds hs = tupleToPost <$> zip3 ts ds hs

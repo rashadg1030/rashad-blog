@@ -14,7 +14,7 @@ import qualified Pages.Library           as Library
 import qualified Pages.Research          as Research
 import qualified Pages.Software          as Software
 import System.Directory
-
+import Data.List
 
 -- NOTE!! File paths are relative to where you run the executable
 
@@ -31,8 +31,7 @@ main = do
   let names = Index.dropExt <$> postPaths
   mapM_ mdToHtml names
 
-
 testGetPosts :: IO ()
 testGetPosts = do
   posts <- Index.getPosts 
-  print posts  
+  print $ sort posts  
