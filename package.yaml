@@ -28,8 +28,6 @@ dependencies:
 
 library:
   exposed-modules: 
-    - Components.Dynamic
-    - Components.Static
     - Pages.Art
     - Pages.Contact
     - Pages.Index

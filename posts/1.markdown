@@ -1,2 +1,7 @@
-# My First Post
+---
+title: My First Post
+author: Rashad Gover
+date: 05/15/19
+---
+
 This is my first post. Thanks for looking at it.

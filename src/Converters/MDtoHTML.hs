@@ -11,12 +11,15 @@ import Components.Dynamic.Base
 import Control.Monad.IO.Class
 import qualified Data.Text.IO as T
 
-mdToHtml :: FilePath -> HtmlT IO ()
+mdToHtml :: FilePath -> IO Text
 mdToHtml inPath = do
+  template <- baseTemplate
   markdown <- liftIO $ T.readFile inPath 
   result <- liftIO $ runIO $ do
-    ast <- readMarkdown def markdown
-    writeHtml5String def ast
+    ast <- readMarkdown def{ readerExtensions = extensionsFromList [Ext_yaml_metadata_block] } markdown
+    writeHtml5String def{ writerTemplate = Just template } ast
   html <- liftIO $ handleError result
-  inBaseText html
-  
+  return html
+
+baseTemplate :: IO String
+baseTemplate = readFile "./templates/postTemplate.html"
