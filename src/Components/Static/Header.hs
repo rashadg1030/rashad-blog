@@ -18,7 +18,7 @@ header = head_ ( do meta_ [ charset_ "utf-8"
                     link_ [ href_ "https://fonts.googleapis.com/css?family=Nunito|Raleway"
                           , rel_ "stylesheet"
                           ]
-                    title_ "RashadのBlog" )
+                    title_ "rashadのblog" )
 
 headerIO :: HtmlT IO ()
 headerIO = head_ ( do meta_ [ charset_ "utf-8"
