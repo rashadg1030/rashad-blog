@@ -28,6 +28,12 @@ h1 {
     background-color: black;
 }
 
+.post-item {
+    margin: 0.5em;
+    padding: 1em;
+    list-style-type: none;
+}
+
 .footer {
     position: absolute;
     bottom: 0;

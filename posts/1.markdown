@@ -1,6 +1,24 @@
 ---
-title: My First Post
-date: 05/15/19
+title: Happy New Year!
+date: 01/02/19
 ---
 
-This is my first post. Thanks for looking at it.
+Happy New Year! What better way to start the year off than starting a blog? For the record, starting this blog is not a New Year resolution or anything like that. I’ve been thinking about starting this blog for some time now, but have put it off for two reasons:
+
+1. Not being able to find a cool name for the blog
+2. Not having a clue about what I’m “qualified” to write about
+
+I still haven’t solved my first problem, but I’m hoping a cool name will come naturally to the blog as I continue to add more content. My second problem was that I believed I wasn’t experienced enough to blog seriously about programming. Even though I had 3 years of programming, 4 semesters as a computer science tutor, and a few small projects under my belt, I still felt as if I wasn’t experienced enough. Now, I can finally say that I’m comfortable sharing my experiences with others through blogging without feeling like an imposter.
+
+Looking back, I wish I would’ve started this blog when I first started learning to program. If there are any beginner programmers reading this, I encourage you to not make the same mistake I did, and start recording your learning journey as soon as possible. Who cares if you don’t know enough yet? Just write about what you know so far. Don’t think that you have to be an expert on a certain concept in order to blog about it. It’s not like you’re writing a book or anything. I guarantee that even if your knowledge is limited, your knowledge will be useful to someone out there. Even if nobody reads it or finds it useful, it has value to you because writing is one of the best ways to reinforce your knowledge about the world. Also, by blogging your experiences you are simultaneously keeping track of the progress you’re making towards your goals. This is actually one of the main reasons I decided to start this blog. Last year I feel like I learned a lot, but I honestly have nothing to show for it except for a few half-baked projects. This year I hope that blogging will give me something to look back on and say, “Oh yeah, I remember learning about that. That was fun and interesting!”
+
+Before even deciding whether or not I wanted to start blogging, I had a hard time deciding what I wanted the blog to be about. Eventually, after much deep thought, I decided that this blog will contain pretty much whatever comes to my mind. I have many interests that I would like to write about, but programming will be a primary focus. If you read this blog, you can expect the following content:
+
+1. Problems I face when building software and how I deal with them
+2. Haskell and concepts related to programming in Haskell, like functional programming, type theory, and category theory
+3. Data science and machine learning
+
+I’m excited to blog about topic number 1 because I’ve been working on enough side projects to where I actually have some interesting software engineering problems to write about. Any interesting challenges that I come across on my programming adventures will be documented, along with how I approach and solve them. I believe this will make me a better programmer and increase my proficiency in explaining software systems and how they are built. I’m most excited for number 3 because it’s so interesting and vast. Learning Haskell has been a life-changing experience. Its changed the way I see the world, just like learning how to program for the first time changed how I saw the world. Haskell also introduced me to whole new worlds that I didn’t even know existed, like category theory, also known as the “mathematics of mathematics”, and functional programming. I will be writing a separate blog post about my Haskell experience in the near future, but to sum it up nicely, it has been challenging but extremely rewarding at the same time. Last but not least, I am also looking forward to blogging about my journey to understanding data science and machine learning. I am currently enrolled in Andrew Ng’s Machine Learning course on Coursera, and I will mostly be blogging about my experience with that until I can actually begin working on my own data science projects.
+
+Other than posts about the three topics above, I will probably have a few posts related to some of my other interests like art, design, science fiction, and biology. Whatever it is that I write about, I hope that it is of some use to you. Enjoy!
+
