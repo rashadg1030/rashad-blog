@@ -12,4 +12,4 @@ render :: Text
 render = renderText $ inBase softwarePage
 
 softwarePage :: Html ()
-softwarePage = h1_ "My software adventures."
+softwarePage = h1_ "Here you can find software I've built or contributed to. Coming soon."

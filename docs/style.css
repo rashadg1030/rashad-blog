@@ -2,11 +2,17 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    font-family: 'Nunito', sans-serif;
+    font-family: monospace;
 }
 
-h1 {
-    font-family: 'Raleway', sans-serif;
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    background-color: black;
+    color: white;
 }
 
 .main {
@@ -15,6 +21,7 @@ h1 {
 
 .navbar {
     padding: 0.5em;
+    font-size: 1.25em;
 }
 
 .navbar-item {
@@ -47,6 +54,11 @@ h1 {
 .post-item-link:hover {
     color:white;
     background-color: black;
+}
+
+.contact-info {
+    font-size: 1.25em;
+    font-family: monospace;
 }
 
 .footer {

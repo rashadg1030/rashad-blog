@@ -4,9 +4,6 @@ module Converters.MDtoHTML (mdToHtml) where
 
 import Text.Pandoc
 import Data.Text (Text)
-import Lucid
-import Lucid.Base
-import Lucid.Html5
 import Components.Dynamic.Base
 import qualified Data.Text.IO as T
 
