@@ -1,6 +1,6 @@
 ---
 title: My Third Post
-date: 05-17-2019
+date: 2019-05-17
 ---
 
 This is my third post. Thanks for looking at it.

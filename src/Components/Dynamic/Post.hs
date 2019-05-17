@@ -21,8 +21,8 @@ instance Ord Post where
   (<=) :: Post -> Post -> Bool
   p1 <= p2 = date1 <= date2
     where
-      date1 = parseTimeM True defaultTimeLocale "%m-%d-%0Y" (unpack $ date p1) :: Maybe Day
-      date2 = parseTimeM True defaultTimeLocale "%m-%d-%0Y" (unpack $ date p2) :: Maybe Day
+      date1 = parseTimeM True defaultTimeLocale "%0Y-%m-%d" (unpack $ date p1) :: Maybe Day
+      date2 = parseTimeM True defaultTimeLocale "%0Y-%m-%d" (unpack $ date p2) :: Maybe Day
 
 testParse :: String -> Maybe Day
-testParse s = parseTimeM True defaultTimeLocale "%m-%d-%0Y" s :: Maybe Day             
+testParse s = parseTimeM True defaultTimeLocale "%0Y-%m-%d" s :: Maybe Day             
