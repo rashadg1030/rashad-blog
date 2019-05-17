@@ -1,6 +1,6 @@
-name:                rashad1030
+name:                rashad-blog
 version:             0.1.0.0
-github:              "githubuser/rashad1030"
+github:              "rashadg1030/rashad-blog"
 license:             BSD3
 author:              "Author name here"
 maintainer:          "example@example.com"
@@ -47,7 +47,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - rashad1030
+    - rashad-blog
 
 tests:
   rashad1030-test:
@@ -58,4 +58,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - rashad1030
+    - rashad-blog
