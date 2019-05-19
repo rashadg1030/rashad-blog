@@ -3,12 +3,12 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-family: monospace;
-    font-size: 1.1em;
+    font-size: 1.1rem;
     line-height: 1.6;
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 2rem;
 }
 
 a {
@@ -16,46 +16,40 @@ a {
     color: black;
 }
 
-
-
 a:hover {
     background-color: black;
     color: white;
 }
 
 .main {
-    padding: 0.5em;
+    padding: 0.5rem;
 }
 
 .navbar {
-    padding: 0.5em;
+    padding: 0.5rem;
 }
 
 .navbar-item {
-    padding: 0.25em;
+    padding: 0.25rem;
 }
 
 .post-item {
     list-style-type: none;
-    margin: 0.75em;
+    margin: 0.75rem;
     float: left;
 }
 
 .post-item > * {
-    padding: 0.25em;
+    padding: 0.25rem;
 }
 
 .post-item-link {
     font-style: italic;
 }
 
-/* .contact-info {
-    font-size: 1.25em;
-} */
-
-.footer {
+/* .footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     padding: 1em;
-}
+} */
