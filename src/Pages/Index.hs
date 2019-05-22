@@ -26,7 +26,7 @@ indexPage = do h1_ "Home Page"
                p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional and/or statically typed programming languages like Haskell and Scheme."
                p_ "I'm discovering the intersection between logic, mathematics, and computation."
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
-               p_ "Enjoy!"
+               p_ "Enjoy!" 
                archive
 
 postToListItem :: Post -> HtmlT IO ()
@@ -34,6 +34,10 @@ postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "p
                                                        p_ $ toHtml date
                                                        -- tags 
                                                    ) 
+
+downloadButton :: Html () -> T.Text -> Html ()
+downloadButton text filepath = button_ (a_ [class_ "button", href_ filepath] text)
+
 
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"
