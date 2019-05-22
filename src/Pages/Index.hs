@@ -27,6 +27,7 @@ indexPage = do h1_ "Home Page"
                p_ "I'm discovering the intersection between logic, mathematics, and computation."
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
                p_ "Enjoy!" 
+               downloadButton "Download My Resume" "./Rashad_Gover.pdf"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
@@ -35,9 +36,8 @@ postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "p
                                                        -- tags 
                                                    ) 
 
-downloadButton :: Html () -> T.Text -> Html ()
-downloadButton text filepath = button_ (a_ [class_ "button", href_ filepath] text)
-
+downloadButton :: HtmlT IO () -> T.Text -> HtmlT IO ()
+downloadButton name href = (a_ [class_ "button", href_ href, download_ ""] name)
 
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ "Archive"

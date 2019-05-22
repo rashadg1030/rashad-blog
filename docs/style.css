@@ -46,3 +46,15 @@ a:hover {
 .post-item-link {
     font-style: italic;
 }
+
+.button {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    color: chartreuse;
+}
+
+.button:hover {
+    color: white;
+    background-color: chartreuse;
+}
+
