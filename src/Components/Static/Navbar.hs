@@ -22,7 +22,7 @@ navbar = div_ [class_ "navbar"] (do navbarItem "data Rashad" "./index.html"
                                     navbarItem "Contact {..}" "./contact.html")
 
 navbarItem :: Html () -> Text -> Html ()
-navbarItem name href = a_ [class_ "navbar-item", href_ href] name
+navbarItem name href = a_ [class_ "navbar-item hover", href_ href] name
 
 equals :: Html ()
 equals = span_ " = "
@@ -44,7 +44,7 @@ navbarIO = div_ [class_ "navbar"] (do navbarItemIO "data Rashad" "./index.html"
                                       navbarItemIO "Contact {..}" "./contact.html")
 
 navbarItemIO :: HtmlT IO () -> Text -> HtmlT IO ()
-navbarItemIO name href = a_ [class_ "navbar-item", href_ href] name
+navbarItemIO name href = a_ [class_ "navbar-item hover", href_ href] name
 
 equalsIO :: HtmlT IO ()
 equalsIO = span_ " = "

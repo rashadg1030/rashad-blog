@@ -31,7 +31,7 @@ indexPage = do h1_ "Home Page"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
-postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "post-item-link"] (toHtml title)
+postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "post-item-link hover"] (toHtml title)
                                                        p_ $ toHtml date
                                                        -- tags 
                                                    ) 

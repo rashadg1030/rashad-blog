@@ -39,7 +39,7 @@ library:
   source-dirs: src
 
 executables:
-  rashad1030-exe:
+  rashad-blog-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -50,7 +50,7 @@ executables:
     - rashad-blog
 
 tests:
-  rashad1030-test:
+  rashad-blog-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
