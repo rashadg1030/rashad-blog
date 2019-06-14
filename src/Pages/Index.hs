@@ -84,5 +84,3 @@ contentToDate = parseDate . (2 #!!) . T.lines
 -- mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
 -- mapM :: (Traversable t, Monad m) => (a -> m b) -> t a -> m (t b)
 -- renderTextT :: Monad m => HtmlT m a -> m T.Text
-
-

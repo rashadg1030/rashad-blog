@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport" charset="utf-8">
+    <link href="./style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
+    <title>Haskell Typeclasses - Basics</title>
+</head>
+
+<body>
+    <div class="navbar"><a href="./index.html" class="navbar-item">data Rashad</a><span> = </span><a
+            href="./software.html" class="navbar-item">Software</a><span> | </span><a href="./research.html"
+            class="navbar-item">Research</a><span> | </span><a href="./library.html"
+            class="navbar-item">Library</a><span> | </span><a href="./art.html" class="navbar-item">Art</a><span> |
+        </span><a href="./contact.html" class="navbar-item">Contact {..}</a></div>
+    <div class="main">
+        <h1 class=post-title>Haskell Typeclasses - Basics</h1>
+        <p class=post-date>2019-05-31</p>
+        <hr>
+<p>I’ll try my best to explain. In Haskell, typeclasses can be thought of as interfaces. There are programmer defined typeclasses and there are also the typeclasses defined in the Haskell <code>base</code> library[1] such as <code>Eq</code>, <code>Show</code>, and <code>Read</code>. <code>Eq</code>, <code>Show</code>, and <code>Read</code> are some of the fundamental typeclasses in Haskell. They are defined just like any other typeclass. The class definition of <code>Eq</code> for example[2] is:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">class</span> <span class="dt">Eq</span> a <span class="kw">where</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="ot">  (==) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></a></code></pre></div>
+<p>Any type that is an instance of the <code>Eq</code> typeclass has a <code>(==)</code> function that can be used to test the equality of two values of that type. For example, lets create an instance for a <code>Vec2D</code> type. Lets ask ourselves, “What does it mean for two 2D vectors to be equal?”:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="co">-- Our type definition</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">data</span> <span class="dt">Vec2D</span> <span class="ot">=</span> <span class="dt">Vec2D</span> {<span class="ot"> x ::</span> <span class="dt">Float</span>,<span class="ot"> y ::</span> <span class="dt">Float</span> }</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co">-- Our Eq instance for Vec2D</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Vec2D</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="ot">  (==) ::</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb2-7" title="7">  (<span class="op">==</span>) (<span class="dt">Vec2D</span> x1 y1) (<span class="dt">Vec</span> x2 y2) <span class="ot">=</span> x1 <span class="op">==</span> x2 <span class="op">&amp;&amp;</span> y1 <span class="op">==</span> y2</a></code></pre></div>
+<p>Let’s take a look at our implementation of the <code>Eq</code> instance for <code>Vec2D</code>. First we pattern match on both <code>Vec2D</code> values and extract their x and y values. We then test the equality of the x and y values. If the x value of the first vector (<code>x1</code>) and the x value of the second vector (<code>x2</code>) are equal, and the y value of the first vector (<code>y1</code>) and the y value of the second vector (<code>y2</code>) are equal, then the two vectors are equal. This makes sense because vectors in two dimensions are equal to each other when the dimensions of the two vectors are equal. Note the type signature for <code>(==)</code> in the instance definition[3]. The polymorphic type <code>a</code> in the <code>Eq</code> typeclass definition has been filled in by the concrete <code>Vec2D</code> type.</p>
+<p>We could have implemented the <code>Eq</code> instance for <code>Vec2D</code> differently. For example:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1"><span class="co">-- Our Eq instance for Vec2D</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Vec2D</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="ot">  (==) ::</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb3-4" title="4">  (<span class="op">==</span>) (<span class="dt">Vec2D</span> x1 y1) (<span class="dt">Vec</span> x2 y2) <span class="ot">=</span> x1 <span class="op">==</span> y2 <span class="op">&amp;&amp;</span> x2 <span class="op">==</span> y1  </a></code></pre></div>
+<p>We’ve defined the equality of two <code>Vec2D</code> values differently this time. This definition doesn’t really make sense though. There are usually many ways to implement an instance of a typeclass for any given type, but not all of them may be correct.</p>
+<p>Let’s try to implement the <code>add</code> operation under your <code>VecOps</code> typeclass for values of type <code>Vec2D</code>. Once again, lets think about what it means to add 2D vectors together:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">instance</span> <span class="dt">VecOps</span> <span class="dt">Vec2D</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="ot">  add ::</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span></a>
+<a class="sourceLine" id="cb4-3" title="3">  add (<span class="dt">Vec</span> x1 y1) (<span class="dt">Vec</span> x2 y2) <span class="ot">=</span> <span class="dt">Vec</span> (x1 <span class="op">+</span> x2) (y1 <span class="op">+</span> y2)</a>
+<a class="sourceLine" id="cb4-4" title="4">  sub                         <span class="ot">=</span> <span class="fu">undefined</span></a>
+<a class="sourceLine" id="cb4-5" title="5">  dot                         <span class="ot">=</span> <span class="fu">undefined</span></a>
+<a class="sourceLine" id="cb4-6" title="6">  cro                         <span class="ot">=</span> <span class="fu">undefined</span></a>
+<a class="sourceLine" id="cb4-7" title="7">  mul                         <span class="ot">=</span> <span class="fu">undefined</span></a>
+<a class="sourceLine" id="cb4-8" title="8">  len                         <span class="ot">=</span> <span class="fu">undefined</span></a></code></pre></div>
+<p>Here, we pattern match on the two vectors passed into the function like last time. Then we construct a new <code>Vec2D</code> that has <code>x1 + x2</code> as an x value, and <code>y1 + y2</code> as a y value. We have successfully defined <code>add</code> for values of type <code>Vec2D</code>.</p>
+<hr />
+<h2 id="sources">Sources:</h2>
+<p>[1] <a href="http://hackage.haskell.org/package/base-4.3.1.0/docs/src/GHC-Classes.html">http://hackage.haskell.org/package/base-4.3.1.0/docs/src/GHC-Classes.html</a></p>
+<p>This is the actual definition. I just simplified it a bit.</p>
+<p>[2] <a href="http://hackage.haskell.org/package/base">http://hackage.haskell.org/package/base</a></p>
+<p>The <code>base</code> library for Haskell. I recommend looking through it if you like Haskell.</p>
+<p>[3] Normally, type signatures are not allowed in instance definitions unless there is `{-# LANGUAGE InstanceSigs #-}` at the top of the source file. I’m using the type signatures for educational purposes.</p>
+    </div>
+    <!-- <div class="footer">
+        <hr>
+        <p>This is a footer.</p>
+    </div> -->
+
+</body>
+
+</html>
