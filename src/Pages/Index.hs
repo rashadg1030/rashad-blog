@@ -23,7 +23,7 @@ render = renderTextT $ inBaseIO indexPage
 indexPage :: HtmlT IO ()
 indexPage = do h1_ "Home Page"
                p_ "Welcome to my blog! My name is Rashad."
-               p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional and/or statically typed programming languages like Haskell and Scheme."
+               p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional programming languages like Haskell."
                p_ "I'm discovering the intersection between logic, mathematics, and computation."
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
                p_ "Enjoy!" 
