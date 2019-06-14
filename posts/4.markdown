@@ -70,4 +70,4 @@ This is the actual definition. I just simplified it a bit.
 
 The `base` library for Haskell. I recommend looking through it if you like Haskell.
 
-\[3\] Normally, type signatures are not allowed in instance definitions unless there is \`{-# LANGUAGE InstanceSigs #-}\` at the top of the source file. I'm using the type signatures for educational purposes.
+\[3\] Normally, type signatures are not allowed in instance definitions unless there is `{-# LANGUAGE InstanceSigs #-}` at the top of the source file. I'm using the type signatures for educational purposes.
