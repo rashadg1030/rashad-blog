@@ -7,8 +7,8 @@ For the next couple of months I will be working on the web application [issue-wa
 
 Nobody knows for sure, but for now there are a two architectural techniques/ideas that I feel like most of the Haskell community can agree are good practices:
 
-* [Three layer architecture (AKA Functional Core, Imperative Shell)]()
-* [ReaderT Design Pattern]()
+* [Three layer architecture (AKA Functional Core, Imperative Shell)](https://www.parsonsmatt.org/2018/03/22/three_layer_haskell_cake.html)
+* [ReaderT Design Pattern](https://www.fpcomplete.com/blog/2017/06/readert-design-pattern)
 
 I'll be applying these concepts to issue-wanted with the help of my mentors Dmitrii and Veronika, both of whom have lots of experience in building Haskell projects.
 Dmitrii and Veronika are the founders of [Kowainik](https://kowainik.github.io/), a non-profit organization focused on making the world a better place through well designed software. They've a built a wide variety of very helpful Haskell libraries including `colog`, `relude`, and `summoner`. Dmitrii and Veronika also work with Haskell at [Holmusk](https://www.holmusk.com/), a health tech company based in Singapore. `issue-wanted` is based on a template project used at Holmusk for their web applications called [three-layer](https://github.com/Holmusk/three-layer). The great thing about `three-layer` is that it avoids the use of opinionated web frameworks, and instead uses a smart combination of well-documented libraries such as `servant` and `postgresql-simple`. The three-layer template is simple, modular, and can be moulded to fit the needs of most CRUD applications. Feel free to clone the `three-layer` repository and play around with it to get a feel for how to apply the techniques used in `three-layer` to your own projects. For those who need some guidance, I recommend you read the next few blog posts I'll be writing about building `issue-wanted`. You can think of it as a case study on building a web application in Haskell using the methods outlined above. I plan on writing about the following topics: 
@@ -36,17 +36,19 @@ As you can see, `issue-wanted` has five main components:
 
    In order to aggregate all of the Haskell issues and repositories we need to interact with the GitHub API. To do that, we are using phadej's [github library](). This library provides functions that are essentially wrappers around the GitHub REST API. They allow us to query the API with convenient functions that take query strings as arguements. For example:
    
-   ```
-   Code Here
-   ```
+   ~~~ {.haskell .numberLines}
+   -- | Fetch all repositories with Haskell language and label "good first issue"
+   fetchHaskellReposGFI :: IO (Either Error (SearchResult Repo))
+   fetchHaskellReposGFI = searchRepos "language:haskell good-first-issues:>0"
+   ~~~
 
-   This function returns all open, Haskell issues with the label `good first issue`.
+   This function either returns all Haskell repositiories that have at least one issue with the label `good first issue`, or an `Error`.
    
-   At first we considered using the GitHub GraphQL API (V4), but we thought the github library was to convenient to pass up.
+   At one point we considered using the GitHub GraphQL API (V4), but we thought the `github` library was to convenient to pass up.
 
 2. PostgreSQL Database
    
-   We will be using a PostgreSQL database to store all the Haskell repositories and issues we get from querying the GitHub API. To bridge the gap between our application and database we will be using the [`postgresql-simple`]() library. Postgresql-simple is a "Mid-Level PostgreSQL client library" that provides many useful functions for interacting with a PostgreSQL database. You may be wondering why we didn't go with a higher-level, more type safe, EDSL library like `opaleye`, `esqueletto`, or `squeal`. The reason why is beacuse those libraries are too "powerful" for what we need. Our database schema isn't super complex, and our most complex queries are basic join statements. `postgresql-simple` simply allows us to execute raw SQL from our Haskell code.
+   We will be using a PostgreSQL database to store all the Haskell repositories and issues we get from querying the GitHub API. To bridge the gap between our application and database we will be using the [`postgresql-simple`]() library. Postgresql-simple is a "Mid-Level PostgreSQL client library" that provides many useful functions for interacting with a PostgreSQL database. You may be wondering why we didn't go with a higher-level, more type safe, EDSL library like `opaleye`, `esqueletto`, or `squeal`. The reason why is beacuse those libraries are too "powerful" for what we need. Our database schema isn't super complex, and our most complex queries are basic join statements. `postgresql-simple` just allows us to execute raw SQL from our Haskell code.
 
 3. Asynchronous Worker
 
@@ -54,16 +56,27 @@ As you can see, `issue-wanted` has five main components:
 
 4. issue-wanted API
 
-    This is the API that the front-end of the application will be hitting. We easily decided to use `servant` to define our API endpoints. Servant is a well-documented,battle-tested Haskell library, and is probably the best example of using type level programming to solve an interesting problem. With `servant` you can define your API as types and easily compose different APIs at will using the various type operators that `servant` provides. You then write handlers for your endpoints and then voila! It is not required to understand type level programming in depth to use `servant`. Here's an example of simple API:
+    This is the API that the front-end of the application will be hitting. We easily decided to use `servant` to define our API endpoints. Servant is a well-documented,battle-tested Haskell library, and is probably the best example of using type level programming to solve an interesting problem. With `servant` you can define your API as types and easily compose different APIs at will using the various type operators that `servant` provides. You then write handlers for your endpoints and then voila! It is not required to understand type level programming in depth to use `servant`. Here's an example of simple API route from `issue-wanted`:
+    
+    ~~~ {.haskell .numberLines}
+    issueByIdRoute :: route
+        :- "issues"
+        :> Capture "id" Int
+        :> Get '[JSON] Issue
+    ~~~
 
-    ```
-    Code Here
-    ```
+    Few things to note here:
 
-    As you can see, it's really straightforward.
+    a. The type of our API base endpoint should fill the `route` type parameter in the type signature of `issueByIdRoute`. 
+    b. You can think of the `(:-)` and `(:>)` type operators as representations of `/` in the URL. In this case the URL for this endpoint
+       will be `~/issues/:issueId`.
+    c. The last type in the type signature of `issueByIdRoute`, `Get '[JSON] Issue`, basically represents the "return type" of this endpoint. `Get '[JSON] Issue` means
+       that this endpoint takes a GET request and will return a single value of type `Issue` in JSON format.
+
+    As you can see, it's pretty straightforward.
 
 5. Front-End
 
-   Blah Blah
+   For the front-end of `issue-wanted` we are still deciding on what framework to use. The `three-layer` template project uses Elm, but my mentors and I decided we want to experiment with a different technology. Now, we're deciding between using [PureScript]() or a Haskell front-end framework like [Miso](). I haven't tried Miso yet, but at the LambdaConf hackathon I attended I got the opportunity to use `react-basic`. It is a library that provides PureScript bindings to React, and I would say it is pretty intuivitive if you have some React experience. PureScript is nearly identical to Haskell so it was a joy to use. Ideally, I would want `issue-wanted` to be a full-stack Haskell application, but I've heard the tooling around GHCJS\[3\] is a nightmare and getting everything to work properly is pretty much impossible unless you use Nix for package management. This means that if we do decide to use Haskell on the front-end we would have to learn two new technologies: Miso and Nix. This really isn't too much of a downside for me because I plan on learning Nix anyways and wouldn't mind getting some experience using it now. This [post](https://www.reddit.com/r/haskell/comments/bco8he/polimorphiccom_haskell_web_development_using_miso/) that I read on r/haskell had some great things to say about Miso and it is definitely something we will consider. 
 
 As some of you may know, the Haskell web development ecosystem is pretty well developed, so it was a challenge to choose from the plethora of libraries at our disposal.  
