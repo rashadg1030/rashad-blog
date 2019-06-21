@@ -12,4 +12,4 @@ render :: Text
 render = renderText $ inBase libraryPage
 
 libraryPage :: Html () 
-libraryPage = h1_ "My Library Coming Soon"
+libraryPage = h1_ "My Library Coming Very Soon"

@@ -22,7 +22,8 @@ contactPage = pre_ [class_ "contact-info"] ( do "contactInfo :: Rashad"
                                                 "twitter  = "
                                                 (a_ [href_ "https://twitter.com/GoverRashad"] "\"@GoverRashad\"")
                                                 "\n                      , "
-                                                "linkedIn = " 
+                                                "linkedin = " 
                                                 (a_ [href_ "https://www.linkedin.com/in/rashad-gover-2557b1132/"] "\"https://www.linkedin.com/in/rashad-gover-2557b1132/\"")
-                                                " }"
+                                                "\n"
+                                                "}"
                                             ) 

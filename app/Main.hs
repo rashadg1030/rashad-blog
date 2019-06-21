@@ -4,7 +4,7 @@ module Main where
 
 import           Converters.MDtoHTML
 import qualified Data.Text.Lazy.IO       as TL
-import qualified Data.Text.IO       as T
+import qualified Data.Text.IO            as T
 import           Lucid
 import           Lucid.Html5
 import qualified Pages.Art               as Art
@@ -35,3 +35,4 @@ testGetPosts :: IO ()
 testGetPosts = do
   posts <- Index.getPosts 
   print $ sort posts  
+  
