@@ -101,5 +101,5 @@ In conclusion, my mentors and I spent a decent amount of time thinking about the
 
 \[1\]  [https://graninas.com/functional-design-and-architecture-book/](https://graninas.com/functional-design-and-architecture-book/)
 
-This book by Alexander Granin is looking to change that. I've read some of the smaple chapters, and from what I've read it seems like a good book for learning more
+This book by Alexander Granin is looking to change that. I've read some of the sample chapters, and from what I've read it seems like a good book for learning more
 about these sort of ideas. I believe there are also some books by Graham Hutton or someone that discuss the architecture and design of functional programs, but I'm not sure how good or relevant they are. 
