@@ -1,0 +1,18 @@
+---
+title: Typed Functional Programming and Cognitive Load
+date: 2019-06-21
+---
+
+Recently, I've been thinking about how typed functional programming relieves the programmer of so much cognitive load. Cognitive load is defined as
+
+> Some definition that I don't know
+
+Mention garbage collection as an example of removing the conginitve burden of managing memory. 
+Programming in a functional programming language removes one of the biggest causes of cognitive load for programmers: state. Functional programming languages also 
+removes the burden of managing the temporal flow of a program. In an imperative programming language, each line of code is executed in order from top to bottom, and so the programmer must be concerned with what operations happen in what order. 
+
+Not only can the semantics of a programming language be the source of the cognitive load, but the syntax as well. Curly braces make me anxious.
+
+A functional language with types, like Haskell or OCaml, takes the removal of cognitive load to the next level. 
+
+One caveat to programming on a functional programming language with a strong type system is that your ability to manage cognitive load in a programming language with not as many "guard rails" will atrophy significantly. After programming in Haskell for almost a year now, I internally dread programming in any sort of traditional programming language. I guess this silver lining in this cloud is that when I do program in these kind of languages, I put on my functional programmer hat and produce really nice code that is split up into many neat functions. Even if the guard rails that I love to have aren't built into the language, they are already embedded in my head so I carefully avoid any sort of pitfalls. It does hurt to go out of your way to 
