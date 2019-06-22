@@ -56,7 +56,7 @@ Issue-wanted has five main components:
 
 4. issue-wanted API
 
-    This is the API that the front-end of the application will be hitting. We easily decided to use servant to define our API endpoints. Servant is a well-documented,battle-tested Haskell library, and is one of the best examples of using type level programming to solve an interesting problem. With servant you can define your API as types and easily compose different APIs at will using the various type operators that servant provides. You then write handlers for your endpoints and then voila! It is not required to understand type level programming in depth to use servant. Here's an example of simple API route from issue-wanted:
+    This is the API that the front-end of the application will be hitting. We easily decided to use servant to define our API endpoints. Servant is a well-documented, battle-tested Haskell library, and is one of the best examples of using type level programming to solve an interesting problem. With servant you can define your API as types and easily compose different APIs at will using the various type operators that servant provides. You then write handlers for your endpoints and then voila! It is not required to understand type level programming in depth to use servant. Here's an example of simple API route from issue-wanted:
     
     ~~~ {.haskell .numberLines}
     issueByIdRoute :: route
