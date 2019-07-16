@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" charset="utf-8">
     <link href="./style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
-    <title>Typed Functional Programming and Cognitive Load</title>
+    <title>Adding a Custom Effect to Issue-Wanted</title>
 </head>
 
 <body>
@@ -15,17 +15,26 @@
             class="navbar-item">Library</a><span> | </span><a href="./art.html" class="navbar-item">Art</a><span> |
         </span><a href="./contact.html" class="navbar-item">Contact {..}</a></div>
     <div class="main">
-        <h1 class=post-title>Typed Functional Programming and Cognitive Load</h1>
-        <p class=post-date>2019-06-21</p>
+        <h1 class=post-title>Adding a Custom Effect to Issue-Wanted</h1>
+        <p class=post-date>2019-07-13</p>
         <hr>
-<p>Recently, I’ve been thinking about how typed functional programming relieves the programmer of so much cognitive load. Cognitive load is defined as</p>
-<blockquote>
-<p>Some definition that I don’t know</p>
-</blockquote>
-<p>Mention garbage collection as an example of removing the conginitve burden of managing memory. Programming in a functional programming language removes one of the biggest causes of cognitive load for programmers: state. Functional programming languages also removes the burden of managing the temporal flow of a program. In an imperative programming language, each line of code is executed in order from top to bottom, and so the programmer must be concerned with what operations happen in what order.</p>
-<p>Not only can the semantics of a programming language be the source of the cognitive load, but the syntax as well. Curly braces make me anxious.</p>
-<p>A functional language with types, like Haskell or OCaml, takes the removal of cognitive load to the next level.</p>
-<p>One caveat to programming on a functional programming language with a strong type system is that your ability to manage cognitive load in a programming language with not as many “guard rails” will atrophy significantly. After programming in Haskell for almost a year now, I internally dread programming in any sort of traditional programming language. I guess this silver lining in this cloud is that when I do program in these kind of languages, I put on my functional programmer hat and produce really nice code that is split up into many neat functions. Even if the guard rails that I love to have aren’t built into the language, they are already embedded in my head so I carefully avoid any sort of pitfalls. It does hurt to go out of your way to</p>
+<p>Over the past few weeks I’ve been making steady progress on the <a href=""><code>issue-wanted</code></a> project I’m working on for GSoC 2019. Today I would like to present my work on adding a custom monad/effect to <code>issue-wanted</code> and what I learned during the process. It’s only about half way through the Summer, and thanks to my mentors I’ve learned so much!</p>
+<p>As I said in my last post there is still an ongoing debate on what is the best way to structure Haskell programs. As far as I know, the most popular method used today is monad transformers, also known as “mtl-style”. Monad transformers give the programmer the ability to combine, or “stack”, different monads together to create a monad that suits their needs. You’ve probably learned of the idea that monads can be thought of as computations or actions, each with a specific set of rules on how to compose them[1]. I like to think of monads as powerups in a video game; each one gives the programmer a unique ability. With the power to mix and match different monads comes the responsibility of building your own custom monad. When we need to operate within a certain context, but the available monads don’t describe it well enough, we need to create our own. Here’s an example of a problem I faced when working on a feature of <code>issue-wanted</code>. If you don’t know already, the goal of <code>issue-wanted</code> is to be a web application that programmers can use to quickly find open-source Haskell projects to contribute to. Me and my mentors want to make sure that people are able to find the right project for them, and so we thought displaying the Haskell repository along with the category names that populate the project’s <code>.cabal</code> file would be a nice feature. Creators of Haskell projects have the option to add a comma-seperated list of values to the <code>category</code> field of their <code>.cabal</code> file. Here’s the <code>.cabal</code> file for the <code>issue-wanted</code> project for example:</p>
+<pre><code>category: Web, Application</code></pre>
+<p>This metadata is very useful when using <a href="http://hackage.haskell.org/packages/">Hackage</a> to browse for packages.</p>
+<p>Our challege was to figure out how to fetch this metadata and store it in our database. An easy solution would’ve been to just use the GitHub API to retrieve the file contents, but we already use the GitHub API pretty extensively throughout other parts of the application and thought we might risk going over the API rate-limit. A better solution we decided to implement for this problem is to download the file from directly from GitHub. Are <code>Repo</code> type is defined as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="co">-- | Data type representing a GitHub repository</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">data</span> <span class="dt">Repo</span> <span class="ot">=</span> <span class="dt">Repo</span></a>
+<a class="sourceLine" id="cb2-3" title="3">    {<span class="ot"> repoOwner      ::</span> <span class="op">!</span><span class="dt">RepoOwner</span></a>
+<a class="sourceLine" id="cb2-4" title="4">    ,<span class="ot"> repoName       ::</span> <span class="op">!</span><span class="dt">RepoName</span></a>
+<a class="sourceLine" id="cb2-5" title="5">    ,<span class="ot"> repoDescr      ::</span> <span class="op">!</span><span class="dt">Text</span></a>
+<a class="sourceLine" id="cb2-6" title="6">    ,<span class="ot"> repoCategories ::</span> <span class="op">!</span>(<span class="dt">SqlArray</span> <span class="dt">Category</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7">    } <span class="kw">deriving</span> stock    (<span class="dt">Eq</span>, <span class="dt">Generic</span>, <span class="dt">Show</span>)</a>
+<a class="sourceLine" id="cb2-8" title="8">      <span class="kw">deriving</span> anyclass (<span class="dt">ToJSON</span>, <span class="dt">FromRow</span>, <span class="dt">ToRow</span>)</a></code></pre></div>
+<p>We knew we could construct a URL for the <code>.cabal</code> file with the <code>repoOwner</code> and <code>repoName</code> fields, and use it download its contents for parsing. The funtion would look like this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1"><span class="ot">downloadFile ::</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> <span class="dt">ByteString</span></a></code></pre></div>
+<p>But downloading a file from the Internet is not a pure function! <code>downloadFile</code> needs to operate within some sort of monadic context:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1"><span class="ot">downloadFile ::</span> (<span class="dt">SomeContext</span> m) <span class="ot">=&gt;</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> m <span class="dt">ByteString</span></a></code></pre></div>
     </div>
     <!-- <div class="footer">
         <hr>

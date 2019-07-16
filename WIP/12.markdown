@@ -1,0 +1,21 @@
+---
+title: Typed Functional Programming and Cognitive Load
+date: 2019-06-21
+---
+
+Recently, I've been thinking about ways in which typed functional programming relieves the programmer of cognitive load. Cognitive load is defined on Wikipedia
+
+> In cognitive psychology, cognitive load refers to the used amount of _working memory resources_.
+
+If cognitive load refers to the working memeory resources being used, then what are the ways in which typed funtional programming reduces the use of these resources?
+First, let's take a step back and look at ways in which fucntional programming langauges, without types, relieve the user of cogintive load. Some examples of functional programming languages that fall in this category are Scheme, Clojure, Erlang, and Elixir. Programming in a functional language takes care of one the biggest causes of cognitive load which is state. Managing state in a system of any size can be a huge pain, and there is good reason why experienced programmers avoid it as much as possible. The more state a program relies on, the more cognitive load it bears on the programmer. Each stateful variable added to a program exponentially increases the amount of cognitive load the program produces. 
+
+Mention garbage collection as an example of removing the conginitve burden of managing memory. 
+Programming in a functional programming language removes one of the biggest causes of cognitive load for programmers: state. Functional programming languages also 
+removes the burden of managing the temporal flow of a program. In an imperative programming language, each line of code is executed in order from top to bottom, and so the programmer must be concerned with what operations happen in what order. 
+
+Not only can the semantics of a programming language be the source of the cognitive load, but the syntax as well. Curly braces make me anxious.
+
+A functional language with types, like Haskell or OCaml, takes the removal of cognitive load to the next level. 
+
+One caveat to programming on a functional programming language with a strong type system is that your ability to manage cognitive load in a programming language with not as many "guard rails" will atrophy significantly. After programming in Haskell for almost a year now, I internally dread programming in any sort of traditional programming language. I guess the silver lining in the cloud is that when I do program in these kind of languages, I put on my functional programmer hat and produce really nice code that is split up into many neat functions. Even if the guard rails that I love to have aren't built into the language, they are already embedded in my head so I carefully avoid any sort of pitfalls. It does hurt to go out of your way to 

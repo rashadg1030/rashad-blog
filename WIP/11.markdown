@@ -1,0 +1,4 @@
+---
+title: Up the Ladder of Programming Languages
+date: 2019-06-29
+---

@@ -1,0 +1,112 @@
+---
+title: The App Monad and ReaderT Pattern
+date: 2019-06-26
+---
+
+In today's post I'll be going over how to define a custom monad stack for an application and how to apply the ReaderT design pattern. To read along it's best if you have at least a basic udnerstandinf of the `Monad` typeclass in Haskell and some of its instances such as `Reader` and `IO`.
+
+As I said in my last post there is still an ongoing debate on what is the best way to structure Haskell programs. The most popular method used today is monad transformers, also known as "mtl-style". Monad transformers give the programmer the ability to combine, or "stack", different monads together to create a monad that suits their needs. You've probably learned of the idea that monads can be thought of as computations or actions, each with a specific set of rules on how to compose them\[1\]. I like to think of monads as powerups in a video game; each one gives us a unique ability.
+
+The `IO` monad gives us the power to use input and output from the outside world in our programs.
+
+~~~ {.haskell .numberLines }
+greeting :: IO ()
+greeting = do
+    putStrLn "What's your name?"
+    name <- getLine
+    putStrLn $ "Hello there " ++ name ++ "!"
+~~~
+
+This program asks the user what their name is, takes their response, and greets them.
+
+Another interesting monad, the `Reader r`\[2\] monad, gives us the power to access a read-only environment of type `r` from our program.
+
+~~~ {.haskell .numberLines }
+setup :: Reader Config Setup
+setup = do
+    mode    <- getMode
+    setting <- getSetting
+    return $ Setup mode setting
+~~~
+
+The above is an extremely contrived example, but let's imagine that we had multiple functions that take in the same type of arguement. In this case we have `getMode` and `getSetting` that both take in an arguement of type `Config`. Note that we don't have to manually pass in a argument to `getMode` or `getSetting`. Becasue we're operating within the context of `Reader Config`, an arguement of type `Config` is passed in automatically\[3\].
+
+But wait, the above is equivalent to:
+
+~~~ {.haskell .numberLines }
+setup' :: Config -> Setup
+setup' = Setup <$> getSetting <*> getMode
+~~~
+
+Yep, the `Reader r` monad by itself is just as useful as `Applicative r`. That's not much help...But what if the result needs `IO`? Let's say I needed to output the `Setup` value to a text file or the console for debugging purposes:
+
+~~~ {.haskell .numberLines }
+setup'' :: Config -> IO Setup
+setup'' = ???
+~~~
+
+This is where monad transformers like `ReaderT` come in to play. Let's look at the definition of `ReaderT` from the `transformers` package:
+
+~~~ {.haskell .numberLines }
+-- | The reader monad transformer,
+-- which adds a read-only environment to the given monad.
+--
+-- The 'return' function ignores the environment, while @>>=@ passes
+-- the inherited environment to both subcomputations.
+newtype ReaderT r m a = ReaderT { runReaderT :: r -> m a }
+~~~
+
+Just like plain ol' `Reader r`, `ReaderT r m a` has access to a read-only environment of `r`. In addition to that power, an instance `ReaderT r m a`
+
+All functions operating within the context of this `ReaderT` monad have access to `Env`. This is very useful because it means we don't have to pass in arguements each time to our functions. We just use `ask` and get the arguement we need. You can think of it as an extra arguement that doesn't have to be passed into the functions, or a global state that is read-only. The type variable `m` represents the monad that "wraps" the result of our computation. Finally, the type variable `a` represents the type of the result.
+
+~~~ {.haskell .numberLines }
+-- | The reader monad transformer,
+-- which adds a read-only environment to the given monad.
+--
+-- The 'return' function ignores the environment, while @>>=@ passes
+-- the inherited environment to both subcomputations.
+newtype ReaderT r m a = ReaderT { runReaderT :: r -> m a }
+~~~
+
+
+
+
+What does a monad that combines both properties of `IO` and `Reader` look like, and what does it do? First, lets see what it looks like. This is the `ReaderT` monad transformer as defined in the [`transfomers`](http://hackage.haskell.org/package/transformers-0.5.6.2/docs/src/Control.Monad.Trans.Reader.html#ReaderT) package:
+
+
+
+The `MaybeT` type constructor has two type variables that can be filled in. The `m` is for a monad type that will "wrap" the `Maybe` value, and the `a` represents the type of the result the `MaybeT` computation will return. Lets fill in the type variables to answer the question we asked ourselves above and play around with the `MaybeT` transformer:
+
+We've filled the type variable `m` from above with the `IO` monad, but we're keeping the `a` polymorphic. The type `MaybeT IO a` tells us that `a` can be an `Int`, `String`, `[Bool]` or any other concrete type. Let's play around with our new monad:
+
+The `MaybeT` monad transformer gives us the power to represent `Maybe` computations that might fail within the context of some other monad.
+
+Let's try playing around with a more useful monad transfomer like `ReaderT`. The `Reader` monad is an interesting monad, but isn't to useful by itself. When combined with other monads like `IO` the `Reader` monad really shines. Lets check out the type definition of `ReaderT`, a monad transformer that allows us to combine the powers of the `Reader` monad with the powers of another monad:
+
+`ReaderT` has three type variables that need to be filled in order to be saturated. The `r` type variable represents the type of the value that all functions operating within the monad have access too. In most practical uses of `ReaderT` you normally see the `r` type variable filled in by a record type called `Env` for environment.
+
+
+Here's the monad we are using for the `issue-wanted` web application:
+
+~~~ {.haskell .numberLines }
+-- | Main application monad.
+newtype App a = App
+    { unApp :: ReaderT AppEnv IO a
+    } deriving (Functor, Applicative, Monad, MonadIO, MonadReader AppEnv)
+~~~
+
+In this case, we are combining the `Reader` and `IO` monads. For those who aren't familiar with, Let's start by defining the meaning of each monad before
+Let's break it down.
+
+
+
+
+
+You've probably heard the term "monad stack" before.
+
+\[1\] From what I've heard, the analogy between monads and "compuatations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I reason about monads. It has been a useful model for me so far.
+
+\[2\] From what I've seen. somtimes the type variable `r` is replaced by `env` for enivronment.
+
+\[3\] https://en.wikibooks.org/wiki/Haskell/Monad_transformers
