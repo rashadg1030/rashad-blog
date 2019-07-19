@@ -6,6 +6,17 @@
     <link href="./style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
     <title>Haskell Typeclasses - Basics</title>
+
+    <!-- Twitter cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@GoverRashad" />
+    <meta property="twitter:title" content="rashadのblog - Haskell Typeclasses - Basics"/>
+    <meta name="twitter:description" content="A simple introduction to typeclasses" />
+    <meta name="twitter:image:src" content="https://rashadg1030.github.io/img/education-graphing.jpg" />
+    <meta property="og:title" content="rashadのblog - Haskell Typeclasses - Basics" />
+    <meta property="og:description" content="A simple introduction to typeclasses" />
+    <meta property="og:site_name" content="rashadのblog" />
+    <meta property="og:image" content="https://rashadg1030.github.io/img/education-graphing.jpg" />
 </head>
 
 <body>
@@ -34,7 +45,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1"><span class="co">-- Our Eq instance for Vec2D</span></a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Vec2D</span> <span class="kw">where</span></a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="ot">  (==) ::</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
-<a class="sourceLine" id="cb3-4" title="4">  (<span class="op">==</span>) (<span class="dt">Vec2D</span> x1 y1) (<span class="dt">Vec</span> x2 y2) <span class="ot">=</span> x1 <span class="op">==</span> y2 <span class="op">&amp;&amp;</span> x2 <span class="op">==</span> y1  </a></code></pre></div>
+<a class="sourceLine" id="cb3-4" title="4">  (<span class="op">==</span>) (<span class="dt">Vec2D</span> x1 y1) (<span class="dt">Vec</span> x2 y2) <span class="ot">=</span> x1 <span class="op">==</span> y2 <span class="op">&amp;&amp;</span> x2 <span class="op">==</span> y1</a></code></pre></div>
 <p>We’ve defined the equality of two <code>Vec2D</code> values differently this time. This definition doesn’t really make sense though. There are usually many ways to implement an instance of a typeclass for any given type, but not all of them may be correct.</p>
 <p>Let’s try to implement the <code>add</code> operation under a <code>VecOps</code> typeclass for values of type <code>Vec2D</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">class</span> <span class="dt">VectorOps</span> a <span class="kw">where</span></a>

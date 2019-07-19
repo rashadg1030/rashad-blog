@@ -26,15 +26,17 @@ indexPage = do h1_ "Home Page"
                p_ "I'm a programmer that loves programming in general, but I'm primarily interested in functional programming languages like Haskell."
                p_ "I'm discovering the intersection between logic, mathematics, and computation."
                p_ "On my blog you will find a wide range of topics, from software design to generative art."
-               p_ "Enjoy!" 
+               p_ "Enjoy!"
                downloadButton "Download My Resume" "./Rashad_Gover.pdf"
                archive
 
 postToListItem :: Post -> HtmlT IO ()
-postToListItem Post{..} = li_ [class_ "post-item"] (do a_ [href_ href, class_ "post-item-link hover"] (toHtml title)
-                                                       p_ $ toHtml date
-                                                       -- tags 
-                                                   ) 
+postToListItem Post{..} = do
+  li_ [class_ "post-item"] (do a_ [href_ href, class_ "post-item-link hover"] (toHtml title)
+                               p_ $ toHtml date
+                               br_ []
+                              -- tags
+                           )
 
 downloadButton :: HtmlT IO () -> T.Text -> HtmlT IO ()
 downloadButton name href = (a_ [class_ "button", href_ href, download_ ""] name)

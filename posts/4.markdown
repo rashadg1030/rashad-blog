@@ -1,16 +1,17 @@
 ---
 title: Haskell Typeclasses - Basics
 date: 2019-05-31
+description: A simple introduction to typeclasses
 ---
 
-In Haskell, typeclasses can be thought of as interfaces. There are programmer defined typeclasses and there are also the typeclasses defined in the Haskell `base` libraries\[1\] such as `Eq`, `Show`, and `Read`. `Eq`, `Show`, and `Read` are some of the fundamental typeclasses in Haskell. They are defined just like any other typeclass. The class definition of `Eq` for example\[2\] is:  
+In Haskell, typeclasses can be thought of as interfaces. There are programmer defined typeclasses and there are also the typeclasses defined in the Haskell `base` libraries\[1\] such as `Eq`, `Show`, and `Read`. `Eq`, `Show`, and `Read` are some of the fundamental typeclasses in Haskell. They are defined just like any other typeclass. The class definition of `Eq` for example\[2\] is:
 
 ~~~ {.haskell .numberLines}
 class Eq a where
   (==) :: a -> a -> Bool
 ~~~
-  
-Any type that is an instance of the `Eq` typeclass has a `(==)` function that can be used to test the equality of two values of that type. For example, lets create an instance for a `Vec2D` type. Lets ask ourselves, "What does it mean for two 2D vectors to be equal?":  
+
+Any type that is an instance of the `Eq` typeclass has a `(==)` function that can be used to test the equality of two values of that type. For example, lets create an instance for a `Vec2D` type. Lets ask ourselves, "What does it mean for two 2D vectors to be equal?":
 
 ~~~ {.haskell .numberLines}
 -- Our type definition
@@ -21,21 +22,21 @@ instance Eq Vec2D where
   (==) :: Vec2D -> Vec2D -> Bool
   (==) (Vec2D x1 y1) (Vec x2 y2) = x1 == x2 && y1 == y2
 ~~~
-  
-Let's take a look at our implementation of the `Eq` instance for `Vec2D`. First we pattern match on both `Vec2D` values and extract their x and y values. We then test the equality of the x and y values. If the x value of the first vector (`x1`) and the x value of the second vector (`x2`) are equal, and the y value of the first vector (`y1`) and the y value of the second vector (`y2`) are equal, then the two vectors are equal. This makes sense because vectors in two dimensions are equal to each other when the dimensions of the two vectors are equal. Note the type signature for `(==)` in the instance definition\[3\]. The polymorphic type `a` in the `Eq` typeclass definition has been "filled" in by the `Vec2D` type.  
 
-We could have implemented the `Eq` instance for `Vec2D` differently. For example:  
+Let's take a look at our implementation of the `Eq` instance for `Vec2D`. First we pattern match on both `Vec2D` values and extract their x and y values. We then test the equality of the x and y values. If the x value of the first vector (`x1`) and the x value of the second vector (`x2`) are equal, and the y value of the first vector (`y1`) and the y value of the second vector (`y2`) are equal, then the two vectors are equal. This makes sense because vectors in two dimensions are equal to each other when the dimensions of the two vectors are equal. Note the type signature for `(==)` in the instance definition\[3\]. The polymorphic type `a` in the `Eq` typeclass definition has been "filled" in by the `Vec2D` type.
+
+We could have implemented the `Eq` instance for `Vec2D` differently. For example:
 
 ~~~ {.haskell .numberLines }
 -- Our Eq instance for Vec2D
 instance Eq Vec2D where
   (==) :: Vec2D -> Vec2D -> Bool
-  (==) (Vec2D x1 y1) (Vec x2 y2) = x1 == y2 && x2 == y1  
+  (==) (Vec2D x1 y1) (Vec x2 y2) = x1 == y2 && x2 == y1
 ~~~
-  
-We've defined the equality of two `Vec2D` values differently this time. This definition doesn't really make sense though. There are usually many ways to implement an instance of a typeclass for any given type, but not all of them may be correct.  
 
-Let's try to implement the `add` operation under a `VecOps` typeclass for values of type `Vec2D`. 
+We've defined the equality of two `Vec2D` values differently this time. This definition doesn't really make sense though. There are usually many ways to implement an instance of a typeclass for any given type, but not all of them may be correct.
+
+Let's try to implement the `add` operation under a `VecOps` typeclass for values of type `Vec2D`.
 
 ~~~ {.haskell .numberLines }
 class VectorOps a where
@@ -44,7 +45,7 @@ class VectorOps a where
   dot :: a -> a -> Float
 ~~~
 
-Once again, lets think about what it means to add 2D vectors together:  
+Once again, lets think about what it means to add 2D vectors together:
 
 ~~~ {.haskell .numberLines }
 instance VecOps Vec2D where
@@ -53,8 +54,8 @@ instance VecOps Vec2D where
   sub                         = undefined
   dot                         = undefined
 ~~~
-  
-Here, we pattern match on the two vectors passed into the function like last time. Then we construct a new `Vec2D` that has `x1 + x2` as an x value, and `y1 + y2` as a y value. We have successfully defined `add` for values of type `Vec2D`.  
+
+Here, we pattern match on the two vectors passed into the function like last time. Then we construct a new `Vec2D` that has `x1 + x2` as an x value, and `y1 + y2` as a y value. We have successfully defined `add` for values of type `Vec2D`.
 
 As an exercise, try to implement the rest of the `VecOps` methods for `Vec2D` or try to implement them for a `Vec3D` type with three dimensions.
 

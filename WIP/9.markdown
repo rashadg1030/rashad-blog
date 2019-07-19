@@ -110,3 +110,24 @@ You've probably heard the term "monad stack" before.
 \[2\] From what I've seen. somtimes the type variable `r` is replaced by `env` for enivronment.
 
 \[3\] https://en.wikibooks.org/wiki/Haskell/Monad_transformers
+
+In case you were wondering how the environment is setup in the first place:
+
+~~~ {.haskell .numberLines}
+mkAppEnv :: Config -> IO AppEnv
+mkAppEnv Config{..} = do
+    -- IO configuration
+    envDbPool <- initialisePool cDbCredentials
+
+    -- Http manager configuration
+    envManager <- newTlsManager
+
+    -- pure configuration
+    let envLogAction = mainLogAction cLogSeverity
+    pure Env{..}
+
+main :: IO ()
+main = loadConfig >>= mkAppEnv >>= runServer
+~~~
+
+`mkAppEnv` is used to create the `AppEnv` from a `Config` value that we read from a file. We then run the application with `runServer`.
