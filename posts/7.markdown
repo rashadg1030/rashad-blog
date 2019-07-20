@@ -221,7 +221,8 @@ Let's break this down:
 
 2. Something that stands out in this snippet of code is the `WithDownload` type synonym. Prior to working on issue-wanted, I didn't know that that you could define        type synonyms for constraints but it turns out to be a pretty useful technique.
 
-3. Finally, the actual implementation of `downloadFile`. After asking around on [r/haskell](https://www.reddit.com/r/haskell/comments/cavfnh/                              recommended_library_for_downloading_files_via/) for a library that would allow us to idiomatically download files from URLs, we decided to use the [http-client]        (https://hackage.haskell.org/package/http-client) and [http-client-tls](https://hackage.haskell.org/package/http-client-tls) libraries. We're using `newTlsManager`     for loading up a new TLS manager and `httpLbs` for making the request. We use the response status code for logging messages and return the response body.
+3. Finally, the actual implementation of `downloadFile`. After asking around on [r/haskell](https://www.reddit.com/r/haskell/comments/cavfnh/                              recommended_library_for_downloading_files_via/) for a library that would allow us to idiomatically download files from URLs, we decided to use the
+   [http-client](https://hackage.haskell.org/package/http-client) and [http-client-tls](https://hackage.haskell.org/package/http-client-tls) libraries. We're using `newTlsManager` for loading up a new TLS manager and `httpLbs` for making the request. We use the response status code for logging messages and return the response body.
 
 Awesome! We have our very own monad for downloading stuff from URLs! But wait...
 
