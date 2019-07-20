@@ -133,7 +133,7 @@ With the power to mix and match different monads comes the responsibility of bui
 
 If you don't know already, issue-wanted is a web application that programmers can use to quickly find open-source Haskell projects to contribute to. Me and my mentors want to make sure that people are able to find the right project for them, and so we thought displaying the Haskell repository along with the category names that populate the project's `.cabal` file would be a nice feature. Creators of Haskell projects have the option to add a comma-seperated list of values to the `category` field of their `.cabal` file. Here's the `category` field for the issue-wanted project for example:
 
-~~~ {.cabal}
+~~~ {.haskell .numberLines}
 category: Web, Application
 ~~~
 
