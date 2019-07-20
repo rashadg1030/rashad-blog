@@ -1,10 +1,10 @@
 ---
-title: GSoC 2019 - Adding a Custom Effect to Issue-Wanted
+title: Guide to Implementing Custom Monadic Effects in Issue-Wanted
 date: 2019-07-13
 description: A post on adding a custom monad to the issue-wanted project
 ---
 
-Over the past few weeks I've been making steady progress on the [issue-wanted]() project I'm working on for GSoC 2019. Today I would like to present my work on adding a custom monad/effect to issue-wanted and what I learned during the process. Before I go on about what I added, lets explore what I started with.
+Over the past few weeks I've been making steady progress on the [issue-wanted](https://github.com/kowainik/issue-wanted) project I'm working on for Google Summer of Code 2019. Today I would like to present my work on adding a custom monad/effect to issue-wanted and what I learned during the process. Before I go on about what I added, lets explore what I started with.
 
 ## The App Monad and ReaderT Design Pattern
 
@@ -14,14 +14,38 @@ As I said in my last post there is still an ongoing debate on what is the best w
 -- | Main application monad.
 newtype App a = App
     { unApp :: ReaderT AppEnv IO a
-    } deriving (Functor, Applicative, Monad, MonadIO, MonadReader AppEnv)
+    } deriving (Functor, Applicative, Monad, MonadIO, MonadReader AppEnv, MonadUnliftIO)
 ~~~
 
-I'm using the `ReaderT` monad transformer\[2\] in combination with the `IO` monad. This is just the `Reader` monad with the addition of being able to return values in an `IO` context. The `ReaderT` is wrapped in a newtype so we can derive useful methods from other typeclasses. In short, the type definition above means `App` is a monad that can read from an environment of type `AppEnv` and return values of `IO a`. Note the various typeclasses that `App` derives. `App` has access to methods ranging from the useful basics like `fmap` (from `Functor`), to more powerful methods like `liftIO` (from `MonadIO`) and `ask` (from `MonadReader AppEnv`).
+I'm using the [`ReaderT`](https://hackage.haskell.org/package/transformers-0.5.6.2/docs/Control-Monad-Trans-Reader.html#t:ReaderT) monad transformer in combination with the `IO` monad. This is just the `Reader` monad with the addition of being able to use `IO` in its computations. The `ReaderT` transformer is wrapped in a newtype, `App` in this case, so we can inherit useful methods from other typeclasses as well.
 
-Wait, how are errors taken care of without `throwError` and `catchError` from `MonadError`? The `App` type has those methods too, but they to be defined manually becuase of the way the `AppError` type is defined:
+In short, the type definition above means `App` is a monad that can read from an environment of type `AppEnv` and return values of type `a` in an `IO` context. Note the various typeclasses that `App` derives. `App` has access to methods ranging from the useful basics like `fmap` (from `Functor`), to more powerful methods like `liftIO` (from `MonadIO`) and `ask` (from `MonadReader AppEnv`).
+
+This way of structuring an application around the `ReaderT` monad transformer is based on the [ReaderT design pattern](https://www.fpcomplete.com/blog/2017/06/readert-design-pattern)\[2\], made popular by Michael Snoyman at FPComplete. If you think about it, an application runs in a context where:
+
+1. It has access to an envrionment (in our case, the `AppEnv` type) where it can retrieve neccessary resources like a database connection, a configuration file, TLS manager, etc.
+
+and
+
+2. Can perform input/output (i.e. writing to a database or downloading a file from the Internet)
+
+The `ReaderT` monad transfomer in combination with the `IO` monad allows us to express this in our program.
+
+## Handling Errors
+
+Wait, how does the `App` monad handle errors? There are multiple ways to throw and catch errors in Haskell, all with different tradeoffs. One option is to add the `ExceptT` monad transformer to the `App` monad stack, but this complicates the code. If possible, it is best to try and avoid adding another layer to your monad stack. Using `ExceptT` also prevents the `App` monad from derivng important typeclasses like `MonadUnliftIO` that we need for concurrency.
+
+Instead, an instance of `MonadError` is implemented for the the `App` monad.
 
 ~~~ {.haskell .numberLines}
+{- | Exception wrapper around 'AppError'. Useful when you need to throw/catch
+'AppError' as 'Exception'.
+-}
+newtype AppException = AppException
+    { unAppException :: AppError
+    } deriving (Show)
+      deriving anyclass (Exception)
+
 instance MonadError AppError App where
     throwError :: AppError -> App a
     throwError = liftIO . throwIO . AppException
@@ -34,15 +58,7 @@ instance MonadError AppError App where
     {-# INLINE catchError #-}
 ~~~
 
-This way of structuring an application around the `ReaderT` monad is known as the "ReaderT design pattern"\[3\], made popular by Michael Snoyman at FPComplete. If you think about it, an application runs in a context where:
-
-1. It has access to an envrionment (in our case, the `AppEnv` type) where it can retrieve neccessary resources like a database connection, a configuration file, or TLS manager
-
-and
-
-2. Can perform input/output (i.e. writing to a database, downloading a file off the Internet, etc.)
-
-The `ReaderT` monad transfomer in combination with the `IO` monad allows us to express this in our program.
+The `AppException` newtype deriving the [`Exception`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Exception.html#t:Exception) typeclass is used to make implementing `MonadError` for the `App` monad a lot easier and performant. The reasons for choosing this technique to handle errors in the `App` monad is more complicated than I describe here, but I will save this lesson for another blog post.
 
 ## AppEnv and The Has Typeclass Pattern
 
@@ -84,15 +100,15 @@ grab = asks $ obtain @field
 
 Ok lets break this down step by step:
 
-1. We have the type synonym `AppEnv` that you saw in the definition of the `App` monad above. It's just the `Env` type parameterized by the `App` type. This was kind      of odd to me at first beacuse the definition is recursive; `AppEnv` is used to define `App` and `App` is used to define `AppEnv`.
+1. We have the type synonym `AppEnv` that you saw in the definition of the `App` monad above. It's just the `Env` type parameterized by the `App` type. One interesting    thing to notice is that `AppEnv` is used to define `App` and `App` is used to define `AppEnv` making these definitions mutually recursive.
 
 2. `DbPool` is the type synonym we're using to represent a pool of database connections. This will be used for connecting to our PostgreSQL database.
 
-3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type`\[3\] meaning `m` must be filled in by a type that takes another type. This is type variable is primarily used for the `LogAction` type from the          [`co-log`]() library.
+3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type`\[3\] meaning `m` must be filled in by a type that takes another type. This type variable is primarily used for the `LogAction` type from the             [`co-log`](http://hackage.haskell.org/package/co-log) library.
 
 4. An instance of the `HasLog` typeclass from the `co-log` library for our `Env` type.
 
-5. The `Has` typeclass. It is parameterized by two type variables; the `field` of interest and the `env` it is retrieved from. It only has one method, `obtain`, which     takes a value of type `env` and gives back a value of type `field`. This is an example of the Has typeclass pattern\[4\]. This pattern is commonly used in              conjuction with the ReaderT design pattern to make it even more clean and extensible.
+5. The `Has` typeclass. It is parameterized by two type variables; the `field` of interest and the `env` it is retrieved from. It only has one method, `obtain`, which     takes a value of type `env` and gives back a value of type `field`. This is an example of the [Has typeclass pattern](https://medium.com/hackernoon/                    the-has-type-class-pattern-ca12adab70ae). This pattern is commonly used in conjuction with the ReaderT design pattern to make it even more clean and extensible.
 
 6. Here are our instances of the `Has` typeclass. We add one for each field in the `Env` type. The two definintions basically mean we have a way of obtaining a            `DbPool` and `LogAction` from our `Env` type.
 
@@ -119,7 +135,7 @@ If you don't know already, issue-wanted is a web application that programmers ca
 category: Web, Application
 ~~~
 
-Our challege was to figure out how to fetch this metadata and store it in our database. An easy solution would've been to just use the GitHub API to retrieve the file contents, but we already use the GitHub API pretty extensively throughout other parts of the application and thought we might risk going over the API rate-limit. We decided to implement a function to download the file directly from the URL.
+Our challenge was to figure out how to fetch this metadata and store it in our database. An easy solution would've been to just use the GitHub API to retrieve the file contents, but we already use the GitHub API pretty extensively throughout other parts of the application and thought we might risk going over the API rate-limit. We decided to implement a function to download the file directly from the URL.
 
 We knew we could construct a URL for the `.cabal` file given a `RepoOwner` and `RepoName`:
 
@@ -155,7 +171,7 @@ We named this context `MonadDownload`. The class definition looks like this:
 ~~~ {.haskell .numberLines}
 -- | Describes a monad that can download files from a given @Url@.
 class Monad m => MonadDownload m where
-    downloadFile :: Url -> m BysteString
+    downloadFile :: Url -> m ByteString
 ~~~
 
 Typeclasses like the one above are a great way to decouple our code and take advantage of things like mock instances for testing.
@@ -199,12 +215,11 @@ downloadFileImpl url@Url{..} = do
 
 Let's break this down:
 
-1. You may be wondering why `downloadFile` is being implemented via the `downloadFileImpl` function below it.
-   This is actually useful because we can export the `downloadFileImpl` function for testing without worrying about `MonadDownload`.
+1. You may be wondering why `downloadFile` is being implemented via the `downloadFileImpl` function below it. The type of `downloadFile` is constrained to `Url -> App     ByteString` so we can only use it in the `App` context. `downloadFileImpl` on the other hand can operated within a polymorphic context `m`, as long as it abides by     the `WithDownload` constraint. This is useful because it helps with code readability and reusablity. We can see exactly what effects are used by `downloadFileImpl`     by looking at the type signature, and other instances of `MonadDownload` (like the one for the `Test` monad we saw above) can reuse `downloadFileImpl` if we want to    keep the same logic for downloading files.
 
 2. Something that stands out in this snippet of code is the `WithDownload` type synonym. Prior to working on issue-wanted, I didn't know that that you could define        type synonyms for constraints but it turns out to be a pretty useful technique.
 
-3. Finally, the actual implementation of `downloadFile`. After asking around on [r/haskell]() for a library that would allow us to idiomatically download files from       URLs, we decided to use the [http-client-tls](https://hackage.haskell.org/package/http-client-tls) library. From this library we're using `newTlsManager` for           loading up a new TLS manager and `httpLbs` for making the request. We use the response status code for logging messages and return the response body.
+3. Finally, the actual implementation of `downloadFile`. After asking around on [r/haskell](https://www.reddit.com/r/haskell/comments/cavfnh/                              recommended_library_for_downloading_files_via/) for a library that would allow us to idiomatically download files from URLs, we decided to use the [http-client]()      and [http-client-tls](https://hackage.haskell.org/package/http-client-tls) libraries. We're using `newTlsManager` for loading up a new TLS manager and `httpLbs` for    making the request. We use the response status code for logging messages and return the response body.
 
 Awesome! We have our very own monad for downloading stuff from URLs! But wait...
 
@@ -215,7 +230,7 @@ downloadFileImpl url@Url{..} = do
     ...
 ~~~
 
-A new TLS manager has to be created each time we call `downloadFileImpl`. This is unneccessary and can lead to suboptimal performance, so we decided to add a field for the manager to our `Env` record. This way, we only need to create the manager once the application is started and grab the same one each time we need to download a file.
+A new TLS manager has to be created each time we call `downloadFileImpl`. This is unneccessary and can lead to suboptimal performance, so we decided to add a field for the manager to our `Env` record. This way, we only need to create the manager once when the application is started, and grab the same one each time we need to download a file.
 
 ~~~ {.haskell .numberLines}
 data Env (m :: Type -> Type) = Env
@@ -252,12 +267,12 @@ Now, the manager is only created once and is grabbed from the envrionment anytim
 
 ## Conclusion
 
-Issue-wanted is looking better and better as the Summer goes on, and I'm excited to see what it will become. Up until the past couple of weeks, most of the code in issue-wanted was borrowed from the Holmusk [three-layer]() template project and I haven't really got the opportunity to implement anything unique to issue-wanted. This is rapidly starting to change as I move past building the foundation and work my way into the more interesting features, like the one I wrote about in this post, that will make issue-wanted what it is.
+Issue-wanted is looking better and better as the Summer goes on, and I'm excited to see what it will become. Up until the past couple of weeks, most of the code in issue-wanted was borrowed from the Holmusk [three-layer](https://github.com/Holmusk/three-layer) template project and I haven't really got the opportunity to implement anything unique to issue-wanted. This is rapidly starting to change as I move past building the foundation and work my way into the more interesting features, like the one I wrote about in this post, that will make issue-wanted what it is.
 
 ## Footnotes:
 
 \[1\] From what I've heard, the analogy between monads and "computations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I reason about monads. It has been a useful model for me so far.
 
-\[2\] From what I've seen. somtimes the type variable `r` is replaced by `env` for enivronment.
+\[2\] The ReaderT pattern used in issue-wanted and the three-layer template project is a slightly modified version of the classic ReaderT pattern by Michael Snoyman.
 
 \[3\] https://en.wikibooks.org/wiki/Haskell/Monad_transformers
