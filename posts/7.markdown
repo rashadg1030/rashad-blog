@@ -104,7 +104,7 @@ Ok lets break this down step by step:
 
 2. `DbPool` is the type synonym we're using to represent a pool of database connections. This will be used for connecting to our PostgreSQL database.
 
-3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type`\[3\] meaning `m` must be filled in by a type that takes another type. This type variable is primarily used for the `LogAction` type from the             [`co-log`](http://hackage.haskell.org/package/co-log) library.
+3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type` meaning `m` must be filled in by a type that takes another type. This type variable is primarily used for the `LogAction` type from the                  [`co-log`](http://hackage.haskell.org/package/co-log) library.
 
 4. An instance of the `HasLog` typeclass from the `co-log` library for our `Env` type.
 
@@ -274,5 +274,3 @@ Issue-wanted is looking better and better as the Summer goes on, and I'm excited
 \[1\] From what I've heard, the analogy between monads and "computations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I reason about monads. It has been a useful model for me so far.
 
 \[2\] The ReaderT pattern used in issue-wanted and the three-layer template project is a slightly modified version of the classic ReaderT pattern by Michael Snoyman.
-
-\[3\] https://en.wikibooks.org/wiki/Haskell/Monad_transformers
