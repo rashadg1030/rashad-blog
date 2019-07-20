@@ -8,7 +8,7 @@ Over the past few weeks I've been making steady progress on the [issue-wanted](h
 
 ## The App Monad and ReaderT Design Pattern
 
-As I said in my last post there is still an ongoing debate on what is the best way to structure Haskell programs. As far as I know, the most popular method used today is monad transformers, also known as "mtl-style". Monad transformers give the programmer the ability to combine, or stack, different monads together to create a monad that suits their specific needs. You've probably learned of the idea that monads can be thought of as computations or actions, each with a specific set of rules on how to compose them\[1\]. I like to think of monads as powerups in a video game; each one gives the program a unique ability. At the core of issue-wanted is the `App` monad. It is a basic monad stack defined as follows:
+As I said in my [last post](https://rashadg1030.github.io/rashad-blog/6.html), there is still an ongoing debate on what is the best way to structure Haskell programs. As far as I know the most popular method used today is monad transformers, also known as "mtl-style". Monad transformers give the programmer the ability to combine, or stack, different monads together to create a monad that suits their specific needs. You've probably learned of the idea that monads can be thought of as computations or actions, each with a specific set of rules on how to compose them\[1\]. I like to think of monads as powerups in a video game; each one gives the program you're writing a unique ability. At the core of issue-wanted is the `App` monad. It is a basic monad stack defined as follows:
 
 ~~~ {.haskell .numberLines}
 -- | Main application monad.
@@ -21,7 +21,7 @@ I'm using the [`ReaderT`](https://hackage.haskell.org/package/transformers-0.5.6
 
 In short, the type definition above means `App` is a monad that can read from an environment of type `AppEnv` and return values of type `a` in an `IO` context. Also note the various typeclasses that `App` derives. `App` has access to methods ranging from the useful basics like `fmap` (from `Functor`), to more powerful methods like `liftIO` (from `MonadIO`) and `ask` (from `MonadReader AppEnv`).
 
-This way of structuring an application around the `ReaderT` monad transformer is based on the [ReaderT design pattern](https://www.fpcomplete.com/blog/2017/06/readert-design-pattern)\[2\], made popular by Michael Snoyman at FPComplete. If you think about it, an application runs in a context where:
+This way of structuring an application around the `ReaderT` monad transformer is based on the [ReaderT design pattern](https://www.fpcomplete.com/blog/2017/06/readert-design-pattern)\[2\] made popular by Michael Snoyman at FPComplete. If you think about it, an application runs in a context where:
 
 1. It has access to an envrionment (in our case, the `AppEnv` type) where it can retrieve neccessary resources like a database connection, a configuration file, TLS manager, etc.
 
@@ -29,7 +29,7 @@ and
 
 2. Can perform input/output (e.g. writing to a database or downloading a file from the Internet)
 
-The `ReaderT` monad transfomer in combination with the `IO` monad allows us to express this in a program.
+The `ReaderT` monad transfomer in combination with the `IO` monad allows us to express this in our programs.
 
 ## Handling Errors
 
@@ -58,7 +58,9 @@ instance MonadError AppError App where
     {-# INLINE catchError #-}
 ~~~
 
-The `AppException` newtype deriving the [`Exception`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Exception.html#t:Exception) typeclass is used to make implementing `MonadError` for the `App` monad a lot easier and performant. The reasons for choosing this technique to handle errors in the `App` monad is more complicated than I describe here, but I will save this lesson for another blog post.
+The `AppException` newtype deriving the [`Exception`](https://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Exception.html#t:Exception) typeclass is only used to make implementing `MonadError` a lot easier and performant.
+
+The reasons for choosing this technique to handle errors in the `App` monad is more complicated than I describe here, but I will save this lesson for another blog post.
 
 ## AppEnv and The Has Typeclass Pattern
 
@@ -98,13 +100,13 @@ grab :: forall field env m . (MonadReader env m, Has field env) => m field
 grab = asks $ obtain @field
 ~~~
 
-Ok lets break this down step by step:
+Ok, lets break this down step by step:
 
 1. We have the type synonym `AppEnv` that you saw in the definition of the `App` monad above. It's just the `Env` type parameterized by the `App` type. One interesting    thing to notice is that `AppEnv` is used to define `App` and `App` is used to define `AppEnv` making these definitions mutually recursive.
 
 2. `DbPool` is the type synonym we're using to represent a pool of database connections. This will be used for connecting to our PostgreSQL database.
 
-3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type` meaning `m` must be filled in by a type that takes a type constructor. This type variable is primarily used for the `LogAction` type from the            [`co-log`](http://hackage.haskell.org/package/co-log) library.
+3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type` meaning `m` must be filled in by a single-parameter type constructor. This type variable is primarily used for the `LogAction` type from the             [`co-log`](http://hackage.haskell.org/package/co-log) library.
 
 4. An instance of the `HasLog` typeclass from the `co-log` library for our `Env` type.
 
@@ -127,7 +129,7 @@ Ok lets break this down step by step:
 
 ## The Download Monad
 
-With the power to mix and match different monads comes the responsibility of building your own custom monad. When we need to operate within a certain context, but the available monads don't describe it well enough, we need to create our own.
+With the power to mix and match different monads comes the responsibility of building your own custom monad. When we need to operate within a certain context but the available monads don't describe it well enough, we need to create our own.
 
 If you don't know already, issue-wanted is a web application that programmers can use to quickly find open-source Haskell projects to contribute to. Me and my mentors want to make sure that people are able to find the right project for them, and so we thought displaying the Haskell repository along with the category names that populate the project's `.cabal` file would be a nice feature. Creators of Haskell projects have the option to add a comma-seperated list of values to the `category` field of their `.cabal` file. Here's the `category` field for the issue-wanted project for example:
 
@@ -163,7 +165,7 @@ downloadFile :: Url -> ByteString
 But downloading a file from the Internet is not a pure function! `downloadFile` needs to operate within some sort of monadic context:
 
 ~~~ {.haskell .numberLines}
-downloadFile :: (SomeContext m) => Url -> m ByteString
+downloadFile :: SomeContext m => Url -> m ByteString
 ~~~
 
 We named this context `MonadDownload`. The class definition looks like this:
@@ -268,16 +270,16 @@ downloadFileImpl url@Url{..} = do
             throwError $ urlDownloadFailedError url
 ~~~
 
-We simply add `Has Manager env` to the `WithDownload` constraint and now `downloadFileImpl` can grab the manager from the envrionment anytime it's needed to download a file without creating a new one each time. Nice!
+We simply add `Has Manager env` to the `WithDownload` constraint and now `downloadFileImpl` can grab the manager from the envrionment anytime it's needed to download a file, without creating a new one each time. Nice!
 
 ## Conclusion
 
-Issue-wanted is looking better and better as the Summer goes on, and I'm excited to see what it will become. Up until the past couple of weeks, much of the structure of issue-wanted was borrowed from the Holmusk [three-layer](https://github.com/Holmusk/three-layer) template project and I haven't really got the opportunity to implement anything unique to issue-wanted until now. I'm starting to move past building the foundation of the project, and work my way into the more interesting features like the one I wrote about in this post.
+Issue-wanted is looking better and better as the Summer goes on and I'm excited to see how everything comes together. Up until the past couple of weeks, much of the structure of issue-wanted was borrowed from the Holmusk [three-layer](https://github.com/Holmusk/three-layer) template project and I haven't really got the opportunity to implement anything unique to issue-wanted until now. I'm starting to move past building the foundation of the project and work my way into the more interesting features like the one I wrote about in this post. I look forward to implementing interesting solutions to the problems I will encounter as I continue to work on issue-wanted.
 
 ## Footnotes:
 
-\[1\] From what I've heard, the analogy between monads and "computations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I reason about monads. It has been a useful model for me so far.
+\[1\] From what I've heard, the analogy between monads and "computations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I           reason about monads. It has been a useful model for me so far.
 
 \[2\] The ReaderT pattern used in issue-wanted and the three-layer template project is a slightly modified version of the classic ReaderT pattern by Michael Snoyman.
 
-\[3\] We're also building the project with the `-Wredundant-constraints` flag which makes sure that we are using the minimum context needed for the function to operate.
+\[3\] We're also building the project with the `-Wredundant-constraints` flag which guarantees that we are using the minimum context needed for our functions to              operate.
