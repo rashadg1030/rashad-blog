@@ -104,7 +104,7 @@ Ok lets break this down step by step:
 
 2. `DbPool` is the type synonym we're using to represent a pool of database connections. This will be used for connecting to our PostgreSQL database.
 
-3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type` meaning `m` must be filled in by a type that takes another type. This type variable is primarily used for the `LogAction` type from the                  [`co-log`](http://hackage.haskell.org/package/co-log) library.
+3. This is the `Env` type. It's a record type that represents the different resources our `App` monad has access to. Interestingly, it has a type variable of kind         `Type -> Type` meaning `m` must be filled in by a type that takes a type constructor. This type variable is primarily used for the `LogAction` type from the            [`co-log`](http://hackage.haskell.org/package/co-log) library.
 
 4. An instance of the `HasLog` typeclass from the `co-log` library for our `Env` type.
 
@@ -152,7 +152,7 @@ repoCabalUrl (RepoOwner repoOwner) (RepoName repoName) = Url $
     <> ".cabal"
 ~~~
 
-This solution isn't one hundered percent correct because there will be cases where the `.cabal` file isn't stored on GitHub at all, the `.cabal` file isn't in the `master` branch, or we're dealing with a multi-package Haskell project. For now, we're ignoring these cases, but we definitely plan on adding support for these kinds of Haskell projects in the future to ensure that we have as much useful metadata as possible.
+This solution isn't one hundered percent correct because there will be cases where the `.cabal` file isn't stored on GitHub at all, the `.cabal` file isn't in the `master` branch, or we're dealing with a multi-package Haskell project. For now, an error is thrown when one of these cases occurs and the file isn't downloaded, but we definitely plan on adding support for these kinds of Haskell projects in the future to ensure that we have as much useful metadata as possible.
 
 Once we figured out how to construct the URLs, we needed to implement a function for downloading the contents. A function that takes a `Url` and gives back a `ByteString` representing the file contents:
 
@@ -215,7 +215,7 @@ downloadFileImpl url@Url{..} = do
 
 Let's break this down:
 
-1. You may be wondering why `downloadFile` is being implemented via the `downloadFileImpl` function below it. The type of `downloadFile` is constrained to `Url -> App     ByteString` so we can only use it in the `App` context. `downloadFileImpl` on the other hand can operate within a polymorphic context `m`, as long as it abides by      the `WithDownload` constraint. This is useful because it helps with code readability and reusablity. We can see exactly what effects are used by `downloadFileImpl`     by looking at the type signature, and other instances of `MonadDownload` (like the one for the `Test` monad we saw above) can reuse `downloadFileImpl` if we want to    keep the same logic for downloading files.
+1. You may be wondering why `downloadFile` is being implemented via the `downloadFileImpl` function below it. The type of `downloadFile` is constrained to `Url -> App     ByteString` so we can only use it in the `App` context. `downloadFileImpl` on the other hand can operate within a polymorphic context `m`, as long as it abides by      the `WithDownload` constraint. This is useful because it helps with code readability and reusablity. The type signature tells the programmer exactly what minimal       context\[3\] is required for `downloadFileImpl`, and other instances of `MonadDownload` (like the one for the `Test` monad we saw above) can reuse                      `downloadFileImpl` if we want to keep the same logic for downloading files.
 
 2. Something that stands out in this snippet of code is the `WithDownload` type synonym. Prior to working on issue-wanted, I didn't know that that you could define        type synonyms for constraints but it turns out to be a pretty useful technique.
 
@@ -245,6 +245,11 @@ instance Has Manager (Env m) where obtain = envManager
 Now `downloadFileImpl` looks like this:
 
 ~~~ {.haskell .numberLines}
+instance MonadDownload App where
+    downloadFile = downloadFileImpl
+
+type WithDownload env m = (MonadIO m, MonadReader env m, WithError m, WithLog env m, Has Manager env)
+
 downloadFileImpl :: WithDownload env m => Url -> m ByteString
 downloadFileImpl url@Url{..} = do
     man <- grab @Manager
@@ -263,14 +268,16 @@ downloadFileImpl url@Url{..} = do
             throwError $ urlDownloadFailedError url
 ~~~
 
-Now, the manager is only created once and is grabbed from the envrionment anytime it's needed to download a file. Nice!
+We simply add `Has Manager env` to the `WithDownload` constraint and now `downloadFileImpl` can grab the manager from the envrionment anytime it's needed to download a file without creating a new one each time. Nice!
 
 ## Conclusion
 
-Issue-wanted is looking better and better as the Summer goes on, and I'm excited to see what it will become. Up until the past couple of weeks, most of the code in issue-wanted was borrowed from the Holmusk [three-layer](https://github.com/Holmusk/three-layer) template project and I haven't really got the opportunity to implement anything unique to issue-wanted. This is rapidly starting to change as I move past building the foundation and work my way into the more interesting features, like the one I wrote about in this post, that will make issue-wanted what it is.
+Issue-wanted is looking better and better as the Summer goes on, and I'm excited to see what it will become. Up until the past couple of weeks, much of the structure of issue-wanted was borrowed from the Holmusk [three-layer](https://github.com/Holmusk/three-layer) template project and I haven't really got the opportunity to implement anything unique to issue-wanted until now. I'm starting to move past building the foundation of the project, and work my way into the more interesting features like the one I wrote about in this post.
 
 ## Footnotes:
 
 \[1\] From what I've heard, the analogy between monads and "computations" or "actions" isn't 100% accurate, especially in the mathematical sense, but this is how I reason about monads. It has been a useful model for me so far.
 
 \[2\] The ReaderT pattern used in issue-wanted and the three-layer template project is a slightly modified version of the classic ReaderT pattern by Michael Snoyman.
+
+\[3\] We're also building the project with the `-Wredundant-constraints` flag which makes sure that we are using the minimum context needed for the function to operate.
