@@ -31,8 +31,8 @@ p > code {
     padding: 0.2rem;
 }
 
-.hover:hover {
-    background-color: black;
+a:hover {
+    background-color: lightseagreen;
     color: white;
 }
 
