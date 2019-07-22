@@ -113,11 +113,17 @@
 <li><p>Here are our instances of the <code>Has</code> typeclass. We add one for each field in the <code>Env</code> type. The two definintions above mean we have a way of obtaining <code>DbPool</code> and <code>LogAction</code> values from our <code>Env</code> type.</p></li>
 <li><p>This interesting function, <code>grab</code>, does exactly what its name implies. It “grabs” a value of the specified type from our environment. It can be used to grab our database pool for example:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1"><span class="co">-- | Perform action that needs database connection.</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="ot">withPool ::</span> <span class="dt">WithDb</span> env m <span class="ot">=&gt;</span> (<span class="dt">Sql.Connection</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> b) <span class="ot">-&gt;</span> m b</a>
-<a class="sourceLine" id="cb4-3" title="3">withPool f <span class="ot">=</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb4-4" title="4">    pool <span class="ot">&lt;-</span> grab <span class="op">@</span><span class="dt">DbPool</span></a>
-<a class="sourceLine" id="cb4-5" title="5">    liftIO <span class="op">$</span> Pool.withResource pool f</a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="ot">{-# INLINE withPool #-}</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-2" title="2">withPool</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="ot">    ::</span> ( <span class="dt">MonadReader</span> env m</a>
+<a class="sourceLine" id="cb4-4" title="4">       , <span class="dt">Has</span> <span class="dt">DbPool</span> env</a>
+<a class="sourceLine" id="cb4-5" title="5">       , <span class="dt">MonadIO</span> m</a>
+<a class="sourceLine" id="cb4-6" title="6">       )</a>
+<a class="sourceLine" id="cb4-7" title="7">    <span class="ot">=&gt;</span> (<span class="dt">Sql.Connection</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> b)</a>
+<a class="sourceLine" id="cb4-8" title="8">    <span class="ot">-&gt;</span> m b</a>
+<a class="sourceLine" id="cb4-9" title="9">withPool f <span class="ot">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb4-10" title="10">    pool <span class="ot">&lt;-</span> grab <span class="op">@</span><span class="dt">DbPool</span></a>
+<a class="sourceLine" id="cb4-11" title="11">    liftIO <span class="op">$</span> Pool.withResource pool f</a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="ot">{-# INLINE withPool #-}</span></a></code></pre></div>
 <p><code>@DbPool</code> is an example of a type application which you can read more about <a href="https://kseo.github.io/posts/2017-01-08-visible-type-application-ghc8.html">here</a>. I like to think of the <code>grab</code> function as a more convenient version of <code>ask</code> that allows you to specify exactly what you want from the environment.</p></li>
 </ol>
 <h2 id="the-download-monad">The Download Monad</h2>
@@ -156,29 +162,32 @@
 <a class="sourceLine" id="cb11-3" title="3">    downloadFile <span class="ot">=</span> downloadFileImpl</a>
 <a class="sourceLine" id="cb11-4" title="4"></a>
 <a class="sourceLine" id="cb11-5" title="5"><span class="co">-- 2</span></a>
-<a class="sourceLine" id="cb11-6" title="6"><span class="kw">type</span> <span class="dt">WithDownload</span> env m <span class="ot">=</span> (<span class="dt">MonadIO</span> m, <span class="dt">MonadReader</span> env m, <span class="dt">WithError</span> m, <span class="dt">WithLog</span> env m)</a>
-<a class="sourceLine" id="cb11-7" title="7"></a>
-<a class="sourceLine" id="cb11-8" title="8"><span class="co">-- 3</span></a>
-<a class="sourceLine" id="cb11-9" title="9"><span class="ot">downloadFileImpl ::</span> <span class="dt">WithDownload</span> env m <span class="ot">=&gt;</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> m <span class="dt">ByteString</span></a>
-<a class="sourceLine" id="cb11-10" title="10">downloadFileImpl url<span class="op">@</span><span class="dt">Url</span>{<span class="op">..</span>} <span class="ot">=</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb11-11" title="11">    man <span class="ot">&lt;-</span> newTlsManager</a>
-<a class="sourceLine" id="cb11-12" title="12">    <span class="kw">let</span> req <span class="ot">=</span> fromString <span class="op">$</span> toString unUrl</a>
-<a class="sourceLine" id="cb11-13" title="13">    <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Attempting to download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl <span class="op">&lt;&gt;</span> <span class="st">&quot; ...&quot;</span></a>
-<a class="sourceLine" id="cb11-14" title="14">    response <span class="ot">&lt;-</span> liftIO <span class="op">$</span> httpLbs req man</a>
-<a class="sourceLine" id="cb11-15" title="15">    <span class="kw">let</span> status <span class="ot">=</span> statusCode <span class="op">$</span> responseStatus response</a>
-<a class="sourceLine" id="cb11-16" title="16">    <span class="kw">let</span> body <span class="ot">=</span> responseBody response</a>
-<a class="sourceLine" id="cb11-17" title="17">    <span class="fu">log</span> <span class="dt">D</span> <span class="op">$</span> <span class="st">&quot;Recieved a status code of &quot;</span> <span class="op">&lt;&gt;</span> <span class="fu">show</span> status <span class="op">&lt;&gt;</span> <span class="st">&quot; from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb11-18" title="18">    <span class="kw">case</span> status <span class="kw">of</span></a>
-<a class="sourceLine" id="cb11-19" title="19">        <span class="dv">200</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb11-20" title="20">            <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Successfully downloaded file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb11-21" title="21">            <span class="fu">pure</span> <span class="op">$</span> toStrict body</a>
-<a class="sourceLine" id="cb11-22" title="22">        _   <span class="ot">-&gt;</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb11-23" title="23">            <span class="fu">log</span> <span class="dt">E</span> <span class="op">$</span> <span class="st">&quot;Couldn&#39;t download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb11-24" title="24">            throwError <span class="op">$</span> urlDownloadFailedError url</a></code></pre></div>
+<a class="sourceLine" id="cb11-6" title="6"><span class="kw">type</span> <span class="dt">WithError</span> m <span class="ot">=</span> (<span class="dt">MonadError</span> <span class="dt">AppError</span> m, <span class="dt">HasCallStack</span>)</a>
+<a class="sourceLine" id="cb11-7" title="7"><span class="kw">type</span> <span class="dt">WithLog</span> env msg m <span class="ot">=</span> (<span class="dt">MonadReader</span> env m, <span class="dt">HasLog</span> env msg m, <span class="dt">HasCallStack</span>)</a>
+<a class="sourceLine" id="cb11-8" title="8"></a>
+<a class="sourceLine" id="cb11-9" title="9"><span class="kw">type</span> <span class="dt">WithDownload</span> env m <span class="ot">=</span> (<span class="dt">MonadIO</span> m, <span class="dt">MonadReader</span> env m, <span class="dt">WithError</span> m, <span class="dt">WithLog</span> env m)</a>
+<a class="sourceLine" id="cb11-10" title="10"></a>
+<a class="sourceLine" id="cb11-11" title="11"><span class="co">-- 3</span></a>
+<a class="sourceLine" id="cb11-12" title="12"><span class="ot">downloadFileImpl ::</span> <span class="dt">WithDownload</span> env m <span class="ot">=&gt;</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> m <span class="dt">ByteString</span></a>
+<a class="sourceLine" id="cb11-13" title="13">downloadFileImpl url<span class="op">@</span><span class="dt">Url</span>{<span class="op">..</span>} <span class="ot">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb11-14" title="14">    man <span class="ot">&lt;-</span> newTlsManager</a>
+<a class="sourceLine" id="cb11-15" title="15">    <span class="kw">let</span> req <span class="ot">=</span> fromString <span class="op">$</span> toString unUrl</a>
+<a class="sourceLine" id="cb11-16" title="16">    <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Attempting to download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl <span class="op">&lt;&gt;</span> <span class="st">&quot; ...&quot;</span></a>
+<a class="sourceLine" id="cb11-17" title="17">    response <span class="ot">&lt;-</span> liftIO <span class="op">$</span> httpLbs req man</a>
+<a class="sourceLine" id="cb11-18" title="18">    <span class="kw">let</span> status <span class="ot">=</span> statusCode <span class="op">$</span> responseStatus response</a>
+<a class="sourceLine" id="cb11-19" title="19">    <span class="kw">let</span> body <span class="ot">=</span> responseBody response</a>
+<a class="sourceLine" id="cb11-20" title="20">    <span class="fu">log</span> <span class="dt">D</span> <span class="op">$</span> <span class="st">&quot;Recieved a status code of &quot;</span> <span class="op">&lt;&gt;</span> <span class="fu">show</span> status <span class="op">&lt;&gt;</span> <span class="st">&quot; from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb11-21" title="21">    <span class="kw">case</span> status <span class="kw">of</span></a>
+<a class="sourceLine" id="cb11-22" title="22">        <span class="dv">200</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb11-23" title="23">            <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Successfully downloaded file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb11-24" title="24">            <span class="fu">pure</span> <span class="op">$</span> toStrict body</a>
+<a class="sourceLine" id="cb11-25" title="25">        _   <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb11-26" title="26">            <span class="fu">log</span> <span class="dt">E</span> <span class="op">$</span> <span class="st">&quot;Couldn&#39;t download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb11-27" title="27">            throwError <span class="op">$</span> urlDownloadFailedError url</a></code></pre></div>
 <p>Let’s break this down:</p>
 <ol type="1">
 <li><p>You may be wondering why <code>downloadFile</code> is being implemented via the <code>downloadFileImpl</code> function below it. The type of <code>downloadFile</code> is constrained to <code>Url -&gt; App     ByteString</code> so we can only use it in the <code>App</code> context. <code>downloadFileImpl</code> on the other hand can operate within a polymorphic context <code>m</code>, as long as it abides by the <code>WithDownload</code> constraint. This is useful because it helps with code readability and reusablity. The type signature tells the programmer exactly what minimal context[3] is required for <code>downloadFileImpl</code>, and other instances of <code>MonadDownload</code> (like the one for the <code>Test</code> monad we saw above) can reuse <code>downloadFileImpl</code> if we want to keep the same logic for downloading files.</p></li>
-<li><p>Something that stands out in this snippet of code is the <code>WithDownload</code> type synonym. Prior to working on issue-wanted, I didn’t know that that you could define type synonyms for constraints but it turns out to be a pretty useful technique.</p></li>
+<li><p>Something that stands out in this snippet of code is the <code>WithError</code>, <code>WithLog</code>, and <code>WithDownload</code> type synonyms. A type synonym is used to combine multiple constraints that are used together often. This helps with readability. Prior to working on issue-wanted, I didn’t know that that you could define type synonyms for constraints but it turns out to be a pretty useful technique.</p></li>
 <li><p>Finally, the actual implementation of <code>downloadFile</code>. After asking around on <a href="https://www.reddit.com/r/haskell/comments/cavfnh/%20recommended_library_for_downloading_files_via/">r/haskell</a> for a library that would allow us to idiomatically download files from URLs, we decided to use the <a href="https://hackage.haskell.org/package/http-client">http-client</a> and <a href="https://hackage.haskell.org/package/http-client-tls">http-client-tls</a> libraries. We’re using <code>newTlsManager</code> for loading up a new TLS manager and <code>httpLbs</code> for making the request. We use the response status code for logging messages and return the response body.</p></li>
 </ol>
 <p>Awesome! We have our very own monad for downloading stuff from URLs! But wait…</p>
@@ -198,24 +207,27 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">instance</span> <span class="dt">MonadDownload</span> <span class="dt">App</span> <span class="kw">where</span></a>
 <a class="sourceLine" id="cb14-2" title="2">    downloadFile <span class="ot">=</span> downloadFileImpl</a>
 <a class="sourceLine" id="cb14-3" title="3"></a>
-<a class="sourceLine" id="cb14-4" title="4"><span class="kw">type</span> <span class="dt">WithDownload</span> env m <span class="ot">=</span> (<span class="dt">MonadIO</span> m, <span class="dt">MonadReader</span> env m, <span class="dt">WithError</span> m, <span class="dt">WithLog</span> env m, <span class="dt">Has</span> <span class="dt">Manager</span> env)</a>
-<a class="sourceLine" id="cb14-5" title="5"></a>
-<a class="sourceLine" id="cb14-6" title="6"><span class="ot">downloadFileImpl ::</span> <span class="dt">WithDownload</span> env m <span class="ot">=&gt;</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> m <span class="dt">ByteString</span></a>
-<a class="sourceLine" id="cb14-7" title="7">downloadFileImpl url<span class="op">@</span><span class="dt">Url</span>{<span class="op">..</span>} <span class="ot">=</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb14-8" title="8">    man <span class="ot">&lt;-</span> grab <span class="op">@</span><span class="dt">Manager</span></a>
-<a class="sourceLine" id="cb14-9" title="9">    <span class="kw">let</span> req <span class="ot">=</span> fromString <span class="op">$</span> toString unUrl</a>
-<a class="sourceLine" id="cb14-10" title="10">    <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Attempting to download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl <span class="op">&lt;&gt;</span> <span class="st">&quot; ...&quot;</span></a>
-<a class="sourceLine" id="cb14-11" title="11">    response <span class="ot">&lt;-</span> liftIO <span class="op">$</span> httpLbs req man</a>
-<a class="sourceLine" id="cb14-12" title="12">    <span class="kw">let</span> status <span class="ot">=</span> statusCode <span class="op">$</span> responseStatus response</a>
-<a class="sourceLine" id="cb14-13" title="13">    <span class="kw">let</span> body <span class="ot">=</span> responseBody response</a>
-<a class="sourceLine" id="cb14-14" title="14">    <span class="fu">log</span> <span class="dt">D</span> <span class="op">$</span> <span class="st">&quot;Recieved a status code of &quot;</span> <span class="op">&lt;&gt;</span> <span class="fu">show</span> status <span class="op">&lt;&gt;</span> <span class="st">&quot; from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb14-15" title="15">    <span class="kw">case</span> status <span class="kw">of</span></a>
-<a class="sourceLine" id="cb14-16" title="16">        <span class="dv">200</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb14-17" title="17">            <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Successfully downloaded file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb14-18" title="18">            <span class="fu">pure</span> <span class="op">$</span> toStrict body</a>
-<a class="sourceLine" id="cb14-19" title="19">        _   <span class="ot">-&gt;</span> <span class="kw">do</span></a>
-<a class="sourceLine" id="cb14-20" title="20">            <span class="fu">log</span> <span class="dt">E</span> <span class="op">$</span> <span class="st">&quot;Couldn&#39;t download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
-<a class="sourceLine" id="cb14-21" title="21">            throwError <span class="op">$</span> urlDownloadFailedError url</a></code></pre></div>
+<a class="sourceLine" id="cb14-4" title="4"><span class="kw">type</span> <span class="dt">WithError</span> m <span class="ot">=</span> (<span class="dt">MonadError</span> <span class="dt">AppError</span> m, <span class="dt">HasCallStack</span>)</a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="kw">type</span> <span class="dt">WithLog</span> env msg m <span class="ot">=</span> (<span class="dt">MonadReader</span> env m, <span class="dt">HasLog</span> env msg m, <span class="dt">HasCallStack</span>)</a>
+<a class="sourceLine" id="cb14-6" title="6"></a>
+<a class="sourceLine" id="cb14-7" title="7"><span class="kw">type</span> <span class="dt">WithDownload</span> env m <span class="ot">=</span> (<span class="dt">MonadIO</span> m, <span class="dt">MonadReader</span> env m, <span class="dt">WithError</span> m, <span class="dt">WithLog</span> env m, <span class="dt">Has</span> <span class="dt">Manager</span> env)</a>
+<a class="sourceLine" id="cb14-8" title="8"></a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="ot">downloadFileImpl ::</span> <span class="dt">WithDownload</span> env m <span class="ot">=&gt;</span> <span class="dt">Url</span> <span class="ot">-&gt;</span> m <span class="dt">ByteString</span></a>
+<a class="sourceLine" id="cb14-10" title="10">downloadFileImpl url<span class="op">@</span><span class="dt">Url</span>{<span class="op">..</span>} <span class="ot">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb14-11" title="11">    man <span class="ot">&lt;-</span> grab <span class="op">@</span><span class="dt">Manager</span></a>
+<a class="sourceLine" id="cb14-12" title="12">    <span class="kw">let</span> req <span class="ot">=</span> fromString <span class="op">$</span> toString unUrl</a>
+<a class="sourceLine" id="cb14-13" title="13">    <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Attempting to download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl <span class="op">&lt;&gt;</span> <span class="st">&quot; ...&quot;</span></a>
+<a class="sourceLine" id="cb14-14" title="14">    response <span class="ot">&lt;-</span> liftIO <span class="op">$</span> httpLbs req man</a>
+<a class="sourceLine" id="cb14-15" title="15">    <span class="kw">let</span> status <span class="ot">=</span> statusCode <span class="op">$</span> responseStatus response</a>
+<a class="sourceLine" id="cb14-16" title="16">    <span class="kw">let</span> body <span class="ot">=</span> responseBody response</a>
+<a class="sourceLine" id="cb14-17" title="17">    <span class="fu">log</span> <span class="dt">D</span> <span class="op">$</span> <span class="st">&quot;Recieved a status code of &quot;</span> <span class="op">&lt;&gt;</span> <span class="fu">show</span> status <span class="op">&lt;&gt;</span> <span class="st">&quot; from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb14-18" title="18">    <span class="kw">case</span> status <span class="kw">of</span></a>
+<a class="sourceLine" id="cb14-19" title="19">        <span class="dv">200</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb14-20" title="20">            <span class="fu">log</span> <span class="dt">I</span> <span class="op">$</span> <span class="st">&quot;Successfully downloaded file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb14-21" title="21">            <span class="fu">pure</span> <span class="op">$</span> toStrict body</a>
+<a class="sourceLine" id="cb14-22" title="22">        _   <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb14-23" title="23">            <span class="fu">log</span> <span class="dt">E</span> <span class="op">$</span> <span class="st">&quot;Couldn&#39;t download file from &quot;</span> <span class="op">&lt;&gt;</span> unUrl</a>
+<a class="sourceLine" id="cb14-24" title="24">            throwError <span class="op">$</span> urlDownloadFailedError url</a></code></pre></div>
 <p>We simply add <code>Has Manager env</code> to the <code>WithDownload</code> constraint and now <code>downloadFileImpl</code> can grab the manager from the envrionment anytime it’s needed to download a file, without creating a new one each time. Nice!</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Issue-wanted is looking better and better as the Summer goes on and I’m excited to see how everything comes together. Up until the past couple of weeks, much of the structure of issue-wanted was borrowed from the Holmusk <a href="https://github.com/Holmusk/three-layer">three-layer</a> template project and I haven’t really got the opportunity to implement anything unique to issue-wanted until now. I’m starting to move past building the foundation of the project and work my way into the more interesting features like the one I wrote about in this post. I look forward to implementing interesting solutions to the problems I will encounter as I continue to work on issue-wanted.</p>
