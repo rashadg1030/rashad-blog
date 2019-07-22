@@ -118,7 +118,13 @@ Ok, lets break this down step by step:
 
    ~~~ {.haskell .numberLines}
    -- | Perform action that needs database connection.
-   withPool :: WithDb env m => (Sql.Connection -> IO b) -> m b
+   withPool
+       :: ( MonadReader env m
+          , Has DbPool env
+          , MonadIO m
+          )
+       => (Sql.Connection -> IO b)
+       -> m b
    withPool f = do
        pool <- grab @DbPool
        liftIO $ Pool.withResource pool f
@@ -194,6 +200,9 @@ instance MonadDownload App where
     downloadFile = downloadFileImpl
 
 -- 2
+type WithError m = (MonadError AppError m, HasCallStack)
+type WithLog env msg m = (MonadReader env m, HasLog env msg m, HasCallStack)
+
 type WithDownload env m = (MonadIO m, MonadReader env m, WithError m, WithLog env m)
 
 -- 3
@@ -250,6 +259,9 @@ Now `downloadFileImpl` looks like this:
 ~~~ {.haskell .numberLines}
 instance MonadDownload App where
     downloadFile = downloadFileImpl
+
+type WithError m = (MonadError AppError m, HasCallStack)
+type WithLog env msg m = (MonadReader env m, HasLog env msg m, HasCallStack)
 
 type WithDownload env m = (MonadIO m, MonadReader env m, WithError m, WithLog env m, Has Manager env)
 
