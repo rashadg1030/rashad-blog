@@ -43,7 +43,7 @@ downloadButton name href = (a_ [class_ "button", href_ href, download_ ""] name)
 
 archive :: HtmlT IO ()
 archive = div_ [class_ "archive"] (do h1_ [class_ "archive-header"] "Archive"
-                                      a_ [class_ "rss", href_ "", download_ ""] "RSS"
+                                      a_ [class_ "rss", href_ "./rss.xml", download_ ""] "RSS"
                                       ul_ [class_ "archive-list"] (do posts <- liftIO getPosts
                                                                       mapM_ postToListItem posts))
 
