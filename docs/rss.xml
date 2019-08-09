@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>rashadのblog Feed</title>
+<link>https://rashadg1030.github.io/rashad-blog/</link>
+<description>My latest interesting ideas</description>
+<item>
+<title>Guide to Implementing Custom Monadic Effects in Issue-Wanted</title>
+<link>https://rashadg1030.github.io/rashad-blog/7.html</link>
+<guid>https://rashadg1030.github.io/rashad-blog/7.html</guid>
+<pubDate>Sat, 20 Jul 2019 00:00:00 GMT</pubDate>
+<description>My newest article.</description>
+</item>
+<title>GSoC 2019 - Building A Web Application with Haskell</title>
+<link>https://rashadg1030.github.io/rashad-blog/6.html</link>
+<guid>https://rashadg1030.github.io/rashad-blog/6.html</guid>
+<pubDate>Thu, 20 Jun 2019 00:00:00 GMT</pubDate>
+<description>My second article.</description>
+</item>
+<title>LambdaConf 2019</title>
+<link>https://rashadg1030.github.io/rashad-blog/5.html</link>
+<guid>https://rashadg1030.github.io/rashad-blog/5.html</guid>
+<pubDate>Wed, 12 Jun 2019 00:00:00 GMT</pubDate>
+<description>My third article.</description>
+</item>
+</channel>
+</rss>
