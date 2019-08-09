@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
 <title>rashadのblog Feed</title>
 <link>https://rashadg1030.github.io/rashad-blog/</link>
 <description>My latest interesting ideas</description>
+<atom:link href="https://rashadg1030.github.io/rashad-blog/rss.xml" rel="self" type="application/rss+xml" />
 <item>
 <title>Guide to Implementing Custom Monadic Effects in Issue-Wanted</title>
 <link>https://rashadg1030.github.io/rashad-blog/7.html</link>
