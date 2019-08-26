@@ -6,6 +6,13 @@
 <description>My latest interesting ideas</description>
 <atom:link href="https://rashadg1030.github.io/rashad-blog/rss.xml" rel="self" type="application/rss+xml" />
 <item>
+<title>GSoC 2019 - Final Evaluation</title>
+<link>https://rashadg1030.github.io/rashad-blog/8.html</link>
+<guid>https://rashadg1030.github.io/rashad-blog/8.html</guid>
+<pubDate>Mon, 26 Aug 2019 00:00:00 GMT</pubDate>
+<description>My third article.</description>
+</item>
+<item>
 <title>Guide to Implementing Custom Monadic Effects in Issue-Wanted</title>
 <link>https://rashadg1030.github.io/rashad-blog/7.html</link>
 <guid>https://rashadg1030.github.io/rashad-blog/7.html</guid>
@@ -18,13 +25,6 @@
 <guid>https://rashadg1030.github.io/rashad-blog/6.html</guid>
 <pubDate>Thu, 20 Jun 2019 00:00:00 GMT</pubDate>
 <description>My second article.</description>
-</item>
-<item>
-<title>LambdaConf 2019</title>
-<link>https://rashadg1030.github.io/rashad-blog/5.html</link>
-<guid>https://rashadg1030.github.io/rashad-blog/5.html</guid>
-<pubDate>Wed, 12 Jun 2019 00:00:00 GMT</pubDate>
-<description>My third article.</description>
 </item>
 </channel>
 </rss>
