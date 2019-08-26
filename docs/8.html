@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport" charset="utf-8">
+    <link href="./style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
+    <title>GSoC 2019 - Final Evaluation</title>
+
+    <!-- Twitter cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@GoverRashad" />
+    <meta property="twitter:title" content="rashadのblog - GSoC 2019 - Final Evaluation"/>
+    <meta name="twitter:description" content="The final blog post about my experience with GSoC 2019" />
+    <meta name="twitter:image:src" content="https://rashadg1030.github.io/rashad-blog/SanitasPeak.jpg" />
+    <meta property="og:title" content="rashadのblog - GSoC 2019 - Final Evaluation" />
+    <meta property="og:description" content="The final blog post about my experience with GSoC 2019" />
+    <meta property="og:site_name" content="rashadのblog" />
+    <meta property="og:image" content="https://rashadg1030.github.io/rashad-blog/SanitasPeak.jpg" />
+</head>
+
+<body>
+    <div class="navbar"><a href="./index.html" class="navbar-item">data Rashad</a><span> = </span><a
+            href="./software.html" class="navbar-item">Software</a><span> | </span><a href="./research.html"
+            class="navbar-item">Research</a><span> | </span><a href="./library.html"
+            class="navbar-item">Library</a><span> | </span><a href="./art.html" class="navbar-item">Art</a><span> |
+        </span><a href="./contact.html" class="navbar-item">Contact {..}</a></div>
+    <div class="main">
+        <h1 class=post-title>GSoC 2019 - Final Evaluation</h1>
+        <p class=post-date>2019-08-26</p>
+        <hr>
+<h2 id="introduction">Introduction</h2>
+<p>As we approach the beginning the Fall, my journey as a Google Summer of Code student for Haskell.Org sadly comes to an end. If you didn’t know already, this Summer I got the amazing opportunity to contribute to an awesome open-source project called <a href="https://rashadg1030.github.io/rashad-blog/6.html">issue-wanted</a> for Google Summer of Code; a program in which Google pays students to help various communities build open-source software. I was chosen to work under <a href="https://summer.haskell.org/">Haskell.Org</a> with two amazing mentors, <a href="https://kowainik.github.io/">Dmitrii Kovanikov and Veronika Romashkina</a>. Before I even dive into what I accomplished for this project I would like to thank Haskell.Org, my mentors Dmitrii and Veronika, and the entire Haskell community for helping me contribute to issue-wanted. Now, let’s take a look at some of the challenges I had to overcome when working on this project and what I learned from it all.</p>
+<h2 id="the-beginning">The Beginning</h2>
+<p>Before being selected to work on issue-wanted, I had to write a proposal which detailed what I expected to accomplish and how I was going to do it. In writing this proposal, I researched a lot about the Haskell ecosystem and learned what would be the best libraries to use for this project. I got to use pretty much all the technologies I planned on using except for <a href="https://haskell-miso.org/docs">miso</a>. We had initially wanted the application to be a full stack Haskell application, but decided to use Elm on the frontend instead due to the technical difficulties of setting up GHCJS. We also passed on using GraphQL instead of REST due to the lack of a stable GraphQL library in Haskell, which I will talk more about later in this post. I got the opportunity to learn more about libraries like <a href="https://www.servant.dev/">servant</a>, <a href="http://hackage.haskell.org/package/postgresql-simple">postgresql-simple</a>, <a href="http://hackage.haskell.org/package/mtl">mtl</a>, and <a href="https://kowainik.github.io/posts/2018-09-25-co-log">co-log</a>. I also got the opportunity to learn about new libraries that I didn’t even expect to use like the <a href="http://hackage.haskell.org/package/hedgehog">hedgehog</a> library, which was used write <a href="https://teh.id.au/posts/2017/06/07/round-trip-property/">roundtrip property tests</a> for our data types, and the <a href="http://hackage.haskell.org/package/unliftio">unliftio</a> library, which was used for our concurrency needs. All in all, I learned that the Haskell ecosystem has many different and very useful libraries to get the job done (at least for web development).</p>
+<h2 id="challenges">Challenges</h2>
+<p>While working on issue-wanted there were many expected and unexpected challenges that me and my mentors needed to overcome in order to get the project where it is now. Let’s start with the challenges I expected and how we got over them.</p>
+<h3 id="expected-challenges">Expected Challenges</h3>
+<p>Right off the bat, I knew I was going to have some trouble establishing a good workflow for this project. Before working on issue-wanted I had never really used git and GitHub to work on a project with multiple contributors. I knew the very basics like how to make a commit, how to push, and how to pull, but I had trouble understanding concepts like using branches for adding individual features, how a merge and rebase are different, and how to use generated SSH keys for git. Luckily for me, there is tons of great documentation out there on git and GitHub, and my mentors had an amazing git tool called <a href="https://github.com/kowainik/hit-on">hit-on</a> that allowed me to adjust to their tried and true workflow without much friction. I’m really glad they took the time to teach me these skills because these are going to be important for any job or project I work on in the future. I also learned a whole lot about CI (continuous integration), kanban, testing, and the idea of peer review. I have heard of these concepts before, but never got the chance to use them on a real life project until issue-wanted. Utilizing these ideas really does make you a better software engineer and helps you produce nice, maintainable code.</p>
+<p>I also knew I was going to have some trouble learning some new Haskell concepts. Before starting work on issue-wanted the extent of my Haskell knowledge pretty much ended at a basic understanding of monads. I’ve used monad transformers once before in a <a href="https://github.com/rashadg1030/reversi">project of mine</a> with the help of a mentor, but I still didn’t really understand how I could use them practically. Like every other Haskeller in the world, I have read many tutorials[1] in an attempt to understand these mathematical structures, but nothing made sense until I actually used the theory in a real application like issue-wanted. I think I can now officially say that I have an understanding of monad transformers and how they can be used to create custom effects for your Haskell program. I even wrote about it in a blog post which you can find <a href="https://rashadg1030.github.io/rashad-blog/7.html">here</a>!</p>
+<p>On top of learning more about monads and monad transformers in Haskell, I also learned a lot more about other Haskell related concepts that I only had a vague idea of before, like language extensions[2], how to build and run a Haskell project with cabal/<a href="https://docs.haskellstack.org/en/stable/README/">stack</a>, <a href="http://hackage.haskell.org/package/hlint">hlint</a>, GHC warnings, testing, and interestingly, how to format Haskell code. Before working on issue-wanted I’ve seen people format their Haskell code in various ways, and as far I know there really isn’t a standard on how to do so. Thankfully, Dmitrii and Veronika have created an amazing resource that I was able to reference during my work on issue-wanted called the <a href="https://kowainik.github.io/posts/2019-02-06-style-guide">Kowainik style-guide</a>. I highly recommend you check it out if you are confused about how you should format your Haskell code.</p>
+<p>After working on issue-wanted for these past 3 months, my interest in Haskell has grown even more. My goal is to one day write Haskell code for a living, so these skills that I learned are of great value to me and I hope I can continue to improve them.</p>
+<h3 id="unexpected-challenges">Unexpected Challenges</h3>
+<p>As with any project, there were a few unexpected challenges that we ran into as well. I was naive because I thought I had researched everything pretty much perfectly while working on my proposal, so I was even more surprised than I should’ve been when I ran into these obstacles. The biggest thing I’ve taken away from encountering these challenges is that as a software engineer you just have to learn how to adapt when things don’t go your way.</p>
+<p>As I mentioned earlier, we didn’t get the opportunity to use the miso framework on the frontend as we had hoped. I’ve heard great things about miso, but I just didn’t have enough experience with Nix and GHCJS to use it for this project. I was able to build an example miso template, but I had no idea how to integrate it with our code base. Documentation on this topic wasn’t great either, so we decided to use Elm on the frontend instead. My mentors just setup the Elm frontend as I’m still finishing up the backend of the application. Even though I didn’t intend on working on the frontend of this project I now plan on learning some Elm and making some contributions there soon, but for now I’m mainly focused on finishing the Haskell backend.</p>
+<p>We also decided not to use GitHub’s GraphQL API due to a lack of a stable Haskell GraphQL library, and used the GitHub REST API via the <a href="http://hackage.haskell.org/package/github">github</a> library instead. This wasn’t a big deal, because the github library is pretty great and easy to use, but I was looking forward to using GraphQL for the first time. Amazingly, as GSoC comes to end there seems to be a nice GraphQL library in the works right now called <a href="http://hackage.haskell.org/package/morpheus-graphql">morpheus-graphql</a>. Maybe in the future we can refactor issue-wanted to use this library once it is complete, but for now the github library is working great for us except for one thing.</p>
+<p>The biggest unexpected challenge that we ran into were the GitHub REST API rate limits. This was honestly just because I didn’t read the documentation close enough. It turns out that you can only fetch the first 1000 results, 10 pages with 100 results each, per query. This is problematic because there are ~90,000 Haskell repositories and ~200,000 issues! If I can only fetch 1000 results at a time, how can I get all the results? To work around this I had to implement a not-as-elegant-as-it-should-be algorithm to query the API by date intervals. Each query to the GitHub API has a different date interval, so I’m able to fetch 1000 results per date interval and aggregate them all into one list. This way we can fetch all the Haskell repositories and issues 1000 results or less at a time. I am still thinking of a way I can optimize this algorithm, but for now it does what we need it to do. Here’s what the algorithm looks like:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource haskell numberLines"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="ot">{-# LANGUAGE MultiWayIf #-}</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3">githubSearchAll</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="ot">    ::</span> <span class="kw">forall</span> a env m<span class="op">.</span></a>
+<a class="sourceLine" id="cb1-5" title="5">       ( <span class="dt">MonadUnliftIO</span> m</a>
+<a class="sourceLine" id="cb1-6" title="6">       , <span class="dt">WithError</span> m</a>
+<a class="sourceLine" id="cb1-7" title="7">       , <span class="dt">WithLog</span> env m</a>
+<a class="sourceLine" id="cb1-8" title="8">       , <span class="dt">FromJSON</span> a</a>
+<a class="sourceLine" id="cb1-9" title="9">       , <span class="dt">Typeable</span> a</a>
+<a class="sourceLine" id="cb1-10" title="10">       )</a>
+<a class="sourceLine" id="cb1-11" title="11">    <span class="ot">=&gt;</span> <span class="dt">Paths</span>   <span class="co">-- ^ Query paths</span></a>
+<a class="sourceLine" id="cb1-12" title="12">    <span class="ot">-&gt;</span> <span class="dt">Text</span>    <span class="co">-- ^ Query properties</span></a>
+<a class="sourceLine" id="cb1-13" title="13">    <span class="ot">-&gt;</span> <span class="dt">Day</span>     <span class="co">-- ^ The function starts at this day and goes back in time by the size of the interval</span></a>
+<a class="sourceLine" id="cb1-14" title="14">    <span class="ot">-&gt;</span> <span class="dt">Integer</span> <span class="co">-- ^ The date interval</span></a>
+<a class="sourceLine" id="cb1-15" title="15">    <span class="ot">-&gt;</span> [a]     <span class="co">-- ^ A list of accumulated results used in recursive calls to this function</span></a>
+<a class="sourceLine" id="cb1-16" title="16">    <span class="ot">-&gt;</span> m [a]</a>
+<a class="sourceLine" id="cb1-17" title="17">githubSearchAll paths properties recent interval acc <span class="ot">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb1-18" title="18">    <span class="co">-- | Search for first page of the query and check the result count to see what to do next.</span></a>
+<a class="sourceLine" id="cb1-19" title="19">    <span class="dt">SearchResult</span> count vec <span class="ot">&lt;-</span> executeGithubSearch paths properties firstDay recent <span class="dv">1</span></a>
+<a class="sourceLine" id="cb1-20" title="20">    <span class="kw">let</span> firstPage <span class="ot">=</span> V.toList vec</a>
+<a class="sourceLine" id="cb1-21" title="21">        <span class="co">-- | If count is 0, then all results for the given properties have been obtained.</span></a>
+<a class="sourceLine" id="cb1-22" title="22">    <span class="kw">if</span> <span class="op">|</span> count <span class="op">==</span> <span class="dv">0</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb1-23" title="23">            <span class="fu">log</span> <span class="dt">I</span> <span class="st">&quot;All results obtained&quot;</span></a>
+<a class="sourceLine" id="cb1-24" title="24">            <span class="fu">pure</span> acc</a>
+<a class="sourceLine" id="cb1-25" title="25">        <span class="co">-- | If count is less than or equal to 1000, then the interval is good and we can get</span></a>
+<a class="sourceLine" id="cb1-26" title="26">        <span class="co">-- the rest of the results on pages 2 to 10.</span></a>
+<a class="sourceLine" id="cb1-27" title="27">       <span class="op">|</span> count <span class="op">&lt;=</span> <span class="dv">1000</span> <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb1-28" title="28">            listOfSearchResult <span class="ot">&lt;-</span> <span class="fu">mapM</span> (executeGithubSearch paths properties firstDay recent) [<span class="dv">2</span><span class="op">..</span><span class="dv">10</span>]</a>
+<a class="sourceLine" id="cb1-29" title="29">            <span class="kw">let</span> remainingPages <span class="ot">=</span> <span class="fu">concatMap</span> searchResultToList listOfSearchResult</a>
+<a class="sourceLine" id="cb1-30" title="30">            <span class="co">-- | Recursive call with a new @recent@ arguement and a new @acc@ arguement</span></a>
+<a class="sourceLine" id="cb1-31" title="31">            <span class="co">-- representing all pages accumulated up to this point.</span></a>
+<a class="sourceLine" id="cb1-32" title="32">            githubSearchAll paths properties (<span class="fu">pred</span> firstDay) interval (firstPage <span class="op">&lt;&gt;</span> remainingPages <span class="op">&lt;&gt;</span> acc)</a>
+<a class="sourceLine" id="cb1-33" title="33">        <span class="co">-- | Otherwise, call the function with the same arguments but a smaller interval.</span></a>
+<a class="sourceLine" id="cb1-34" title="34">       <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">-&gt;</span> githubSearchAll paths properties recent (<span class="fu">pred</span> interval) acc</a>
+<a class="sourceLine" id="cb1-35" title="35">  <span class="kw">where</span></a>
+<a class="sourceLine" id="cb1-36" title="36">    <span class="co">-- | The first day of the search interval. It&#39;s calculated by subtracting the size of the</span></a>
+<a class="sourceLine" id="cb1-37" title="37">    <span class="co">-- interval from the most recent day of the search interval.</span></a>
+<a class="sourceLine" id="cb1-38" title="38"><span class="ot">    firstDay ::</span> <span class="dt">Day</span></a>
+<a class="sourceLine" id="cb1-39" title="39">    firstDay <span class="ot">=</span> <span class="fu">negate</span> interval <span class="ot">`addDays`</span> recent</a>
+<a class="sourceLine" id="cb1-40" title="40"></a>
+<a class="sourceLine" id="cb1-41" title="41"><span class="ot">    searchResultToList ::</span> <span class="dt">SearchResult</span> a <span class="ot">-&gt;</span> [a]</a>
+<a class="sourceLine" id="cb1-42" title="42">    searchResultToList (<span class="dt">SearchResult</span> _ vec) <span class="ot">=</span> V.toList vec</a></code></pre></div>
+<h2 id="whats-next">What’s Next?</h2>
+<p>Even though I didn’t build issue-wanted to its full potential (yet!), I have accomplished my primary goal which was to create a solid foundation on which I and others can contribute to the project in the future. All of the code is commented nicely, we have great test coverage, CI setup for both the frontend and backend, and detailed issues on the project board which you can find <a href="https://github.com/kowainik/issue-wanted/projects/1">here</a>[3]. Future contributors should have no problems contributing to issue-wanted. I am almost done with the core functionality of the backend. I need to implement endpoints so the frontend can request Haskell project categories and issue labels. I also need to implement an algorithm for cleaning the database of closed issues. We also still need to figure out how to deploy the application on the web. My mentors have setup a basic Elm frontend for the application, but we’re not designers so we’re looking for someone that can design a nice looking, intuitive UI for the application. Let us know if you’re interested! On top of this there are many features that I plan on adding to make the application better as time goes on. This includes adding GitHub authentication, tracking GitHub milestones, and possibly migrating the REST API to GraphQL.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I had so much fun working on this project and I learned so much! My mentors were super awesome and I look forward to continuing to work with them. I can’t wait to finally complete this project and deploy it so community can use it. For anyone that would like to contribute, you can check out the code <a href="https://github.com/kowainik/issue-wanted">here</a>. I believe it will be very useful for newcomers to Haskell. I would like to thank Haskell.Org for giving me the opportunity to work on this project and the Haskell community for giving me recommendations on what libraries to use and other useful tips. Issue-wanted is truly by the community, for the community. Thank you all!</p>
+<h2 id="footnotes">Footnotes:</h2>
+<p>[1] <a href="https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf">Monad Transformers Step By Step</a> is the best paper I’ve read on monad transformers. This paper, along with using monad transformers in practice, really helped me realize how and why monad transformers are useful.</p>
+<p>[2] Alexis King has a great <a href="https://lexi-lambda.github.io/blog/2018/02/10/an-opinionated-guide-to-haskell-in-2018/">post</a> about Haskell languge extensions and other useful Haskell tips. It was written in 2018 but it is still relevant and I highly recommend new Haskellers read it.</p>
+<p>[3] For anyone at Google or Haskell.Org that needs to verify the work I’ve contributed to the project, check the <code>Done</code> column of the <a href="https://github.com/kowainik/issue-wanted/projects/1">project board</a>.</p>
+    </div>
+    <!-- <div class="footer">
+        <hr>
+        <p>This is a footer.</p>
+    </div> -->
+
+</body>
+
+</html>
